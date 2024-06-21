@@ -1,28 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
+import { NgModule,Component, Inject, OnInit } from '@angular/core';
+ import { CommonModule } from '@angular/common';
+ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AddShowComponent } from './add-show.component';
+@Component({
+  selector: 'app-movie-banner-carousel',
+  templateUrl: './movie-banner-carousel.component.html',
+  styleUrls: ['./movie-banner-carousel.component.scss']
+})
 
-describe('AddShowComponent', () => {
-  let component: AddShowComponent;
-  let fixture: ComponentFixture<AddShowComponent>;
+export class MovieBannerCarouselComponent implements OnInit {
+  movies: Array<string> = ["BajrangiBhaijaan","Robot2","Kedarnath","GullyBoy"];
+  coverPhotos: Array<any> = [];
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AddShowComponent ]
-    })
-    .compileComponents();
-  }));
+  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    http.get<any[]>(baseUrl + 'api/movies').subscribe(result => {
+      this.movies = result;
+    }, error => console.error(error));
+  }
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddShowComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  ngOnInit() {
+     
+  }
+  
+}
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
 
 Severity	Code	Description	Project	File	Line	Suppression State
-Error (active)	TS2305	(TS) Module '"@angular/core/testing"' has no exported member 'async'.	C:\src\Angular project\ClientAppTesting\clientapptesting.client\tsconfig.json	C:\src\Angular project\ClientAppTesting\clientapptesting.client\src\app\admin\add-show\add-show.component.spec.ts	1	
+Error (active)	TS2307	(TS) Cannot find module '@ng-bootstrap/ng-bootstrap' or its corresponding type declarations.	C:\src\Angular project\ClientAppTesting\clientapptesting.client\tsconfig.json	C:\src\Angular project\ClientAppTesting\clientapptesting.client\src\app\home\movie-banner-carousel\movie-banner-carousel.component.ts	4	
