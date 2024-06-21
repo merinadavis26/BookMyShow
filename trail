@@ -1,0 +1,28 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AddShowComponent } from './add-show.component';
+
+describe('AddShowComponent', () => {
+  let component: AddShowComponent;
+  let fixture: ComponentFixture<AddShowComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ AddShowComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AddShowComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+Severity	Code	Description	Project	File	Line	Suppression State
+Error (active)	TS2305	(TS) Module '"@angular/core/testing"' has no exported member 'async'.	C:\src\Angular project\ClientAppTesting\clientapptesting.client\tsconfig.json	C:\src\Angular project\ClientAppTesting\clientapptesting.client\src\app\admin\add-show\add-show.component.spec.ts	1	
