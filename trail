@@ -1,11 +1,58 @@
-X [ERROR] TS2551: Property 'editMovie' does not exist on type 'MovieService'. Did you mean 'getMovie'? [plugin angular-compiler]
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>Movies Management</h3>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary mb-3" (click)="openModal(content)">Add New Movie</button>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let movie of movies">
+            <td>{{ movie.name }}</td>
+            <td>
+              <button class="btn btn-warning mr-2" (click)="editMovie(content, movie)">Edit</button>
+              <button class="btn btn-danger" (click)="deleteMovie(movie)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-    src/app/admin/movies-management/movies-management.component.ts:34:22:
-      34 │     this.movieService.editMovie(this.editMovieData);
-         ╵                       ~~~~~~~~~
+  <!-- Modal for Add/Edit Movie -->
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">{{ isEdit ? 'Edit Movie' : 'Add New Movie' }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="movieForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input id="name" class="form-control" formControlName="name" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="genre">Genre</label>
+          <input id="genre" class="form-control" formControlName="genre" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="releaseDate">Release Date</label>
+          <input id="releaseDate" class="form-control" formControlName="releaseDate" type="date" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save changes' : 'Add Movie' }}</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</div>
 
-  'getMovie' is declared here.
-
-    src/app/services/movie.service.ts:17:2:
-      17 │   getMovie(id: number): Observable<any> {
-         ╵   ~~~~~~~~
