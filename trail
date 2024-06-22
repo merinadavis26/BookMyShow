@@ -1,13 +1,32 @@
-Cannot find module '@ng-bootstrap/ng-bootstrap' or its corresponding type declarations.ts(2307)
+X [ERROR] TS2307: Cannot find module '@ng-bootstrap/ng-bootstrap' or its corresponding type declarations. [plugin angular-compiler]
 
-Cannot find module '../services/movie.service' or its corresponding type declarations.ts(2307)
+    src/app/admin/movies-management/movies-management.component.ts:2:25:
+      2 │ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+        ╵                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-No suitable injection token for parameter 'modalService' of class 'MoviesManagementComponent'.
-  Consider using the @Inject decorator to specify an injection token.(-992003)
-movies-management.component.ts(15, 37): This type does not have a value, so it cannot be used as injection token.
-(property) MoviesManagementComponent.modalService: NgbModal
 
-The class 'MoviesManagementComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.(-996001)
-movies-management.component.ts(8, 15): 'MoviesManagementComponent' is declared here.
-(alias) class MoviesManagementComponent
-import MoviesManagementComponent
+X [ERROR] TS2307: Cannot find module '../services/movie.service' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/admin/movies-management/movies-management.component.ts:3:29:
+      3 │ import { MovieService } from '../services/movie.service';
+        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-992008: Could not find template file './movie-management.component.html'. [plugin angular-compiler]
+
+    src/app/admin/movies-management/movies-management.component.ts:7:15:
+      7 │   templateUrl: './movie-management.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996001: The class 'MoviesManagementComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator. [plugin angular-compiler]
+
+    src/app/app.module.ts:27:4:
+      27 │     MoviesManagementComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  'MoviesManagementComponent' is declared here.
+
+    src/app/admin/movies-management/movies-management.component.ts:10:13:
+      10 │ export class MoviesManagementComponent implements OnInit {
+         ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~
