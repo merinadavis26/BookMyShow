@@ -1,19 +1,100 @@
-public List<Movie> GetByCategory()
+using Book_My_Show_DAL.Interfaces;
+using Book_My_Show_Entities;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Book_My_Show_DAL.Implementations
 {
-    var sqlQuery = "SELECT * FROM Category";
-    _db.Open();
-    var res =_db.Query<Movie>(sqlQuery).ToList();
-    _db.Close();
-     return res;
+    public class MovieServices : IMovieServices
+    {
+
+        private IDbConnection _db;
+        public MovieServices(IConfiguration configuration)
+        {
+            _db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));            
+        }
+
+        public Movie Add(Movie movie)
+        {
+            
+                var sqlQuery = "INSERT INTO Movie (Name,ImdbRating,Category,Genre,ReleaseDate,Duration,ActorName,ActressName,ThemePhotoPath) VALUES (@Name,@ImdbRating,@Category,@Genre,@ReleaseDate,@Duration,@ActorName,@ActressName,@ThemePhotoPath)";
+                _db.Execute(sqlQuery, movie);
+                return movie;
+           
+            
+        }
+
+        public int Delete(int id)
+        {
+            var sqlQuery = "DELETE FROM Movie where Id = @id";
+           var res =  _db.Execute(sqlQuery, new { id });
+            if(res !=null)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public Movie Get(int id)
+        {
+            var sqlQuery = "SELECT * FROM Movie where Id = @id";
+            return _db.Query<Movie>(sqlQuery, new { @Id = id }).Single();
+        }
+
+        public List<Movie> GetAll()
+        {
+            var sqlQuery = "SELECT * FROM Movie";
+            return _db.Query<Movie>(sqlQuery).ToList();
+        }
+
+        public List<Movie> GetByCategory()
+        {
+            var sqlQuery = "SELECT * FROM Category";
+            _db.Open();
+            var res =_db.Query<Movie>(sqlQuery).ToList();
+            _db.Close();
+             return res;
+        }
+
+        public List<Movie> GetByGenre()
+        {
+            var sqlQuery = "SELECT * FROM Genre"; 
+            _db.Open();
+             var res=_db.Query<Movie>(sqlQuery).ToList();
+            _db.Close();
+            return res;
+        }
+
+        public List<Movie> GetByName(string Name)
+        {
+            var sqlQuery = "SELECT * FROM Movie where Name like @Name";
+            return _db.Query<Movie>(sqlQuery, new { @Name = Name }).ToList();
+        }
+
+        public List<Movie> GetByStarNames(string ActorName, string ActressName)
+        {
+            var sqlQuery = "SELECT * FROM Movie where ActorName like @ActorName and ActressName like @ActressName";
+            return _db.Query<Movie>(sqlQuery, new { @ActorName = ActorName , @ActressName = ActressName }).ToList();
+        }
+
+        public int Update(Movie movie)
+        {
+            var sqlQuery = "UPDATE Movie SET Name = @Name, ImdbRating = @ImdbRating, Category = @Category, Genre = @Genre, ReleaseDate = @ReleaseDate, ActorName = @ActorName, ActressName = @ActressName, ThemePhotoPath = @ThemePhotoPath where Id = @Id";
+            var res  = _db.Execute(sqlQuery, movie);
+            if(res !=null)
+            {
+                return 1;
+            }
+            return 0;
+        }
+    }
 }
 
-public List<Movie> GetByGenre()
-{
-    var sqlQuery = "SELECT * FROM Genre"; 
-    _db.Open();
-     var res=_db.Query<Movie>(sqlQuery).ToList();
-    _db.Close();
-    return res;
-}
 
 Unable to cast object of type 'System.Data.ProviderBase.DbConnectionClosedConnecting' to type 'System.Data.SqlClient.SqlInternalConnectionTds'.
