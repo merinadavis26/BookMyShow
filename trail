@@ -1,86 +1,32 @@
-<div class="register-form">
-  <h2>Register</h2>
-  <form (ngSubmit)="onSubmit()">
-    <label for="username">Username:</label>
-    <input type="text" id="username" [(ngModel)]="username" name="username" required>
-    
-    <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" name="password" required>
-    
-    <label for="role">Role:</label>
-    <select id="role" [(ngModel)]="role" name="role" required>
-      <option value="user">User</option>
-      <option value="admin">Admin</option>
-    </select>
-    
-    <button type="submit">Register</button>
-  </form>
-</div>
+<nav>
+  <a routerLink="/">Home</a>
+  <ng-container *ngIf="authService.isAuthenticated(); else guestLinks">
+    <ng-container *ngIf="authService.getUserRole() === 'admin'; else userLinks">
+      <a routerLink="/admin/movies">Manage Movies</a>
+      <a routerLink="/admin/theatres">Manage Theatres</a>
+      <a routerLink="/admin/shows">Manage Shows</a>
+    </ng-container>
+    <ng-template #userLinks>
+      <a routerLink="/user/movies">Movies</a>
+      <a routerLink="/user/history">Booking History</a>
+    </ng-template>
+    <a (click)="logout()">Logout</a>
+  </ng-container>
+  <ng-template #guestLinks>
+    <a routerLink="/login">Login</a>
+    <a routerLink="/register">Register</a>
+  </ng-template>
+</nav>
+
 
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css']
 })
-export class RegisterComponent {
-  username: string = '';
-  password: string = '';
-  role: string = 'user';
-
-  constructor(private authService: AuthService, private router: Router) { }
-
-  onSubmit(): void {
-    this.authService.register({ username: this.username, password: this.password, role: this.role }).subscribe(response => {
-      if (response.success) {
-        this.router.navigate(['/login']);
-      }
-    });
-  }
-}
-
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  private authUrl = 'https://your-backend-api/auth';
-
-  constructor(private http: HttpClient) { }
-
-  login(credentials: any): Observable<any> {
-    return this.http.post<any>(`${this.authUrl}/login`, credentials).pipe(
-      tap(response => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('role', response.role);
-        }
-      })
-    );
-  }
-
-  register(user: any): Observable<any> {
-    return this.http.post<any>(`${this.authUrl}/register`, user);
-  }
-
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-  }
-
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
-  }
-
-  getUserRole(): string | null {
-    return localStorage.getItem('role');
-  }
-}
+export class NavbarComponent {
+  constructor(public authService: AuthService, private router: Router
