@@ -1,19 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { MovieService } from '../../services/movie.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'app-movie-list',
-  templateUrl: './movie-list.component.html',
-  styleUrls: ['./movie-list.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class MovieListComponent implements OnInit {
-  movies: any[] = [];
+export class MovieService {
+  private apiUrl = 'https://your-backend-api/movies';
 
-  constructor(private movieService: MovieService) { }
+  constructor(private http: HttpClient) { }
 
-  ngOnInit(): void {
-    this.movieService.getMovies().subscribe(data => {
-      this.movies = data;
-    });
+  getMovies(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  getMovie(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  addMovie(movie: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, movie);
+  }
+
+  updateMovie(id: number, movie: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, movie);
+  }
+
+  deleteMovie(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
