@@ -1,38 +1,34 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
-import { MoviesManagementComponent } from './admin/movies-management/movies-management.component';
-import { TheatresManagementComponent } from './admin/theatres-management/theatres-management.component';
-import { ShowsManagementComponent } from './admin/shows-management/shows-management.component';
-import { UserDashboardComponent } from './user/user-dashboard/user-dashboard.component';
-import { MovieListComponent } from './user/movie-list/movie-list.component';
-import { MovieDetailComponent } from './user/movie-detail/movie-detail.component';
-import { BookingComponent } from './user/booking/booking.component';
-import { BookingHistoryComponent } from './user/booking-history/booking-history.component';
-import { LandingComponent } from './landing/landing.component';
-import { LoginComponent } from './auth/login/login.component';
-import { RegisterComponent } from './auth/register/register.component';
+<div class="login-form">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()">
+    <label for="username">Username:</label>
+    <input type="text" id="username" [(ngModel)]="username" name="username" required>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="password" name="password" required>
+    
+    <button type="submit">Login</button>
+  </form>
+</div>
 
-const routes: Routes = [
-  { path: '', component: LandingComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AdminDashboardComponent, children: [
-    { path: 'movies', component: MoviesManagementComponent },
-    { path: 'theatres', component: TheatresManagementComponent },
-    { path: 'shows', component: ShowsManagementComponent },
-  ]},
-  { path: 'user', component: UserDashboardComponent, children: [
-    { path: 'movies', component: MovieListComponent },
-    { path: 'movies/:id', component: MovieDetailComponent },
-    { path: 'booking', component: BookingComponent },
-    { path: 'history', component: BookingHistoryComponent },
-  ]},
-  { path: '**', redirectTo: '' }
-];
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: url('path-to-your-background-image.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+.landing-page h1 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.landing-page a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 20px;
+}
