@@ -1,49 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MovieService } from '../services/movie.service';
+Cannot find module '@ng-bootstrap/ng-bootstrap' or its corresponding type declarations.ts(2307)
 
-@Component({
-  selector: 'app-movie-management',
-  templateUrl: './movie-management.component.html',
-  styleUrls: ['./movie-management.component.css']
-})
-export class MovieManagementComponent implements OnInit {
-  movies: any[] = [];
-  newMovie: any = {};
-  editMovieData: any = {};
+Cannot find module '../services/movie.service' or its corresponding type declarations.ts(2307)
 
-  constructor(private modalService: NgbModal, private movieService: MovieService) { }
+No suitable injection token for parameter 'modalService' of class 'MoviesManagementComponent'.
+  Consider using the @Inject decorator to specify an injection token.(-992003)
+movies-management.component.ts(15, 37): This type does not have a value, so it cannot be used as injection token.
+(property) MoviesManagementComponent.modalService: NgbModal
 
-  ngOnInit(): void {
-    this.loadMovies();
-  }
-
-  loadMovies(): void {
-    this.movies = this.movieService.getMovies();
-  }
-
-  editMovie(movie: any): void {
-    this.editMovieData = { ...movie }; // Clone the movie object
-    // Open edit modal if needed
-  }
-
-  saveEditedMovie(): void {
-    this.movieService.editMovie(this.editMovieData);
-    this.editMovieData = {}; // Clear edit data
-    // Close modal if needed
-  }
-
-  confirmDelete(movie: any): void {
-    if (confirm(`Are you sure you want to delete ${movie.title}?`)) {
-      this.movieService.deleteMovie(movie.id);
-      this.loadMovies(); // Reload movies after delete
-    }
-  }
-
-  onSubmit(): void {
-    this.movieService.addMovie(this.newMovie);
-    this.newMovie = {}; // Clear new movie data
-    this.modalService.dismissAll(); // Close modal after adding
-    this.loadMovies(); // Reload movies after add
-  }
-}
+The class 'MoviesManagementComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.(-996001)
+movies-management.component.ts(8, 15): 'MoviesManagementComponent' is declared here.
+(alias) class MoviesManagementComponent
+import MoviesManagementComponent
