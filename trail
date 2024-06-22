@@ -1,14 +1,11 @@
-import { NgModule } from '@angular/core';
-import { ServerModule } from '@angular/platform-server';
-import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
-import { AppComponent } from './app.component';
-import { AppModule } from './app.module';
-
-@NgModule({
-    imports: [AppModule, ServerModule, ModuleMapLoaderModule],
-    bootstrap: [AppComponent]
-})
-export class AppServerModule { }
-
-Severity	Code	Description	Project	File	Line	Suppression State
-Error (active)	TS2307	(TS) Cannot find module '@angular/platform-server' or its corresponding type declarations.	C:\src\Angular project\ClientAppTesting\clientapptesting.client\tsconfig.json	C:\src\Angular project\ClientAppTesting\clientapptesting.client\src\app\app.server.module.ts	2	
+ng generate component admin/admin-dashboard
+ng generate component admin/movies-management
+ng generate component admin/theatres-management
+ng generate component admin/shows-management
+ng generate component user/user-dashboard
+ng generate component user/movie-list
+ng generate component user/movie-detail
+ng generate component user/booking
+ng generate component user/booking-history
+ng generate component shared/navbar
+ng generate component shared/footer
