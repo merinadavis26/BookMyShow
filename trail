@@ -1,69 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MovieService } from '../../services/movie.service';
+HttpClientModule' is deprecated. ts(6385)
 
-@Component({
-  selector: 'app-movies-management',
-  templateUrl: './movies-management.component.html',
-  styleUrls: ['./movies-management.component.css']
-})
-export class MoviesManagementComponent implements OnInit {
-  movies: any[] = [];
-  selectedMovie: any = {};
-  isEdit = false;
+(} angular.js
 
-  constructor(
-    private modalService: NgbModal,
-    private movieService: MovieService
-  ) {}
+src> app > TE
 
-  ngOnInit(): void {
-    this.loadMovies();
-  }
+index.d.ts(3210, 4): The declaration was marked as deprecated here.
 
-  loadMovies(): void {
-    this.movieService.getMovies().subscribe(movies => {
-      this.movies = movies;
-    });
-  }
+34
 
-  openModal(content: any, movie?: any): void {
-    if (movie) {
-      this.isEdit = true;
-      this.selectedMovie = { ...movie };
-    } else {
-      this.isEdit = false;
-      this.selectedMovie = {};
-    }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
-  }
+(alias) class HttpClientModule
 
-  onSubmit(form: NgForm): void {
-    if (form.valid) {
-      if (this.isEdit) {
-        this.movieService.editMovie(this.selectedMovie).subscribe(() => {
-          this.loadMovies();
-          this.modalService.dismissAll();
-        });
-      } else {
-        this.movieService.addMovie(this.selectedMovie).subscribe(() => {
-          this.loadMovies();
-          this.modalService.dismissAll();
-        });
-      }
-    }
-  }
+35
 
-  editMovie(content: any, movie: any): void {
-    this.openModal(content, movie);
-  }
+import HttpClientModule
 
-  deleteMovie(movie: any): void {
-    if (confirm('Are you sure you want to delete this movie?')) {
-      this.movieService.deleteMovie(movie.id).subscribe(() => {
-        this.loadMovies();
-      });
-    }
-  }
-}
+36
+
+37
+
+Configures the dependency injector for HttpClient with supporting services for XSRF. Automatically imported by HttpClientModule.
+
+38
+
+39
+
+48
+
+You can add interceptors to the chain behind HttpClient by binding them to the multiprovider for built-in DI token HTTP_INTERCEPTORS.
+
+41
+
+42
+
+im @publicApi
+
+43
+
+@deprecated-use provideHttpClient(withInterceptorsFromDi()) as providers instead
