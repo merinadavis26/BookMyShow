@@ -1,3 +1,101 @@
-Expected 1 arguments, but got 0.ngtsc(2554)
-login.component.ts(6, 42): Error occurs in the template of component LoginComponent.
-(method) LoginComponent.onSubmit(form: NgForm): void
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:3:53:
+      3 │   <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+        ╵                                                      ~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:6:60:
+      6 │ ...class="form-control" [(ngModel)]="username" name="username" requ...
+        ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:10:64:
+      10 │ ...class="form-control" [(ngModel)]="password" name="password" req...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:3:59:
+      3 │   <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
+        ╵                                                            ~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:6:60:
+      6 │ ...class="form-control" [(ngModel)]="username" name="username" requ...
+        ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:10:64:
+      10 │ ...class="form-control" [(ngModel)]="password" name="password" req...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:14:44:
+      14 │ ...role" class="form-select" [(ngModel)]="role" name="role" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "path-to-your-background-image.jpg" [plugin angular-css-resource]
+
+    src/app/landing/landing.component.css:7:20:
+      7 │ ...ackground: url('path-to-your-background-image.jpg') no-repeat ce...
+        ╵                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You can mark the path "path-to-your-background-image.jpg" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+X [ERROR] Could not resolve "node_modules/bootstrap/dist/js/bootstrap.bundle.min.css" [plugin angular-script-global]
