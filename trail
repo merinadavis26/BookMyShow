@@ -1,32 +1,38 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { MoviesManagementComponent } from './admin/movies-management/movies-management.component';
+import { TheatresManagementComponent } from './admin/theatres-management/theatres-management.component';
+import { ShowsManagementComponent } from './admin/shows-management/shows-management.component';
+import { UserDashboardComponent } from './user/user-dashboard/user-dashboard.component';
+import { MovieListComponent } from './user/movie-list/movie-list.component';
+import { MovieDetailComponent } from './user/movie-detail/movie-detail.component';
+import { BookingComponent } from './user/booking/booking.component';
+import { BookingHistoryComponent } from './user/booking-history/booking-history.component';
+import { LandingComponent } from './landing/landing.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
-@Injectable({
-  providedIn: 'root'
+const routes: Routes = [
+  { path: '', component: LandingComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'admin', component: AdminDashboardComponent, children: [
+    { path: 'movies', component: MoviesManagementComponent },
+    { path: 'theatres', component: TheatresManagementComponent },
+    { path: 'shows', component: ShowsManagementComponent },
+  ]},
+  { path: 'user', component: UserDashboardComponent, children: [
+    { path: 'movies', component: MovieListComponent },
+    { path: 'movies/:id', component: MovieDetailComponent },
+    { path: 'booking', component: BookingComponent },
+    { path: 'history', component: BookingHistoryComponent },
+  ]},
+  { path: '**', redirectTo: '' }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class MovieService {
-  private apiUrl = 'https://your-backend-api/movies';
-
-  constructor(private http: HttpClient) { }
-
-  getMovies(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
-  }
-
-  getMovie(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
-
-  addMovie(movie: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, movie);
-  }
-
-  updateMovie(id: number, movie: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, movie);
-  }
-
-  deleteMovie(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
-}
+export class AppRoutingModule { }
