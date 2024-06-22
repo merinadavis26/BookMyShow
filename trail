@@ -1,46 +1,68 @@
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Add Movie</h5>
-    <form (ngSubmit)="onSubmit()" #movieForm="ngForm">
-      <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" name="name" [(ngModel)]="movie.name" required>
-      </div>
-      <div class="mb-3">
-        <label for="imdbRating" class="form-label">IMDb Rating</label>
-        <select class="form-select" id="imdbRating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
-          <option value="1">1 Star</option>
-          <option value="2">2 Stars</option>
-          <option value="3">3 Stars</option>
-          <option value="4">4 Stars</option>
-          <option value="5">5 Stars</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select class="form-select" id="category" name="category" [(ngModel)]="movie.categoryId" required>
-          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="genre" class="form-label">Genre</label>
-        <select class="form-select" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
-          <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="releaseDate" class="form-label">Release Date</label>
-        <input type="date" class="form-control" id="releaseDate" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
-      </div>
-      <div class="mb-3">
-        <label for="duration" class="form-label">Duration (minutes)</label>
-        <input type="number" class="form-control" id="duration" name="duration" [(ngModel)]="movie.duration" required>
-      </div>
-      <div class="mb-3">
-        <label for="themePhoto" class="form-label">Theme Photo</label>
-        <input type="file" class="form-control" id="themePhoto" name="themePhoto" (change)="onFileChange($event)" accept="image/*" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-</div>
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { CategoryService } from '../../services/category.service';
+import { GenreService } from '../../services/genre.service';
+import { MovieService } from '../../services/movie.service';
+
+@Component({
+  selector: 'app-add-movie',
+  templateUrl: './add-movie.component.html',
+  styleUrls: ['./add-movie.component.css']
+})
+export class AddMovieComponent implements OnInit {
+  movie: any = {}; // Object to hold movie data
+  categories: any[] = [];
+  genres: any[] = [];
+  themePhotoPath: string = '';
+
+  constructor(private categoryService: CategoryService, 
+              private genreService: GenreService,
+              private movieService: MovieService) {}
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadGenres();
+  }
+
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe(
+      categories => {
+        this.categories = categories;
+      },
+      error => {
+        console.error('Error loading categories:', error);
+      }
+    );
+  }
+
+  loadGenres(): void {
+    this.genreService.getGenres().subscribe(
+      genres => {
+        this.genres = genres;
+      },
+      error => {
+        console.error('Error loading genres:', error);
+      }
+    );
+  }
+
+  onSubmit(): void {
+    // Add logic to handle form submission and call movieService to add movie
+    this.movie.themePhotoPath = this.themePhotoPath; // Assign theme photo path to movie object
+    this.movieService.addMovie(this.movie).subscribe(
+      response => {
+        console.log('Movie added successfully:', response);
+        // Optionally, navigate to a different component or reset the form
+      },
+      error => {
+        console.error('Error adding movie:', error);
+      }
+    );
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    // Implement logic to handle file upload and extract path (themePhotoPath)
+    this.themePhotoPath = 'path-to-your-uploaded-file'; // Placeholder for actual file path
+  }
+}
