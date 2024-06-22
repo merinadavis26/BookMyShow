@@ -1,53 +1,108 @@
-landing.component.html
-<div class="container text-center vh-100 d-flex flex-column justify-content-center align-items-center">
-  <h1 class="mb-4">Welcome to BookMyShow</h1>
-  <div>
-    <a routerLink="/login" class="btn btn-primary me-2">Login</a>
-    <a routerLink="/register" class="btn btn-secondary">Register</a>
+
+
+
+user-dashboard.html
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" routerLink="/user">
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/user/movies">
+              Movies
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/user/history">
+              Booking History
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">User Dashboard</h1>
+      </div>
+      <router-outlet></router-outlet>
+    </main>
   </div>
 </div>
 
+user-dashboard.component.css
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+}
 
-login.component.html
-<div class="container mt-5">
-  <h2 class="mb-4">Login</h2>
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label for="username" class="form-label">Username:</label>
-      <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" required>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password:</label>
-      <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-  </form>
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+}
+
+
+
+admin-dashboard.html
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" routerLink="/admin">
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/movies">
+              Manage Movies
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/theatres">
+              Manage Theatres
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/shows">
+              Manage Shows
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Admin Dashboard</h1>
+      </div>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>
 
+admin-dashboard.component.css
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+}
 
-register.component.html
-<div class="container mt-5">
-  <h2 class="mb-4">Register</h2>
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label for="username" class="form-label">Username:</label>
-      <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" required>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password:</label>
-      <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required>
-    </div>
-    <div class="mb-3">
-      <label for="role" class="form-label">Role:</label>
-      <select id="role" class="form-select" [(ngModel)]="role" name="role" required>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-  </form>
-</div>
-
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+}
 
 navbar.component.html
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -61,6 +116,9 @@ navbar.component.html
         <li class="nav-item" *ngIf="authService.isAuthenticated(); else guestLinks">
           <ng-container *ngIf="authService.getUserRole() === 'admin'; else userLinks">
             <li class="nav-item">
+              <a class="nav-link" routerLink="/admin">Admin Dashboard</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" routerLink="/admin/movies">Manage Movies</a>
             </li>
             <li class="nav-item">
@@ -71,6 +129,9 @@ navbar.component.html
             </li>
           </ng-container>
           <ng-template #userLinks>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/user">User Dashboard</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" routerLink="/user/movies">Movies</a>
             </li>
@@ -96,15 +157,21 @@ navbar.component.html
 </nav>
 
 
-user-dashboard.html
-<div class="container mt-5">
-  <h2>User Dashboard</h2>
-  <router-outlet></router-outlet>
-</div>
+navbar.component.ts
+import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
+@Component({
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css']
+})
+export class NavbarComponent {
+  constructor(public authService: AuthService, private router: Router) { }
 
-admin-dashboard.html
-<div class="container mt-5">
-  <h2>Admin Dashboard</h2>
-  <router-outlet></router-outlet>
-</div>
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
+}
