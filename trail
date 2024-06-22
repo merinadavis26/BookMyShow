@@ -1,13 +1,19 @@
 public List<Movie> GetByCategory()
 {
     var sqlQuery = "SELECT * FROM Category";
-    return _db.Query<Movie>(sqlQuery).ToList();
+    _db.Open();
+    var res =_db.Query<Movie>(sqlQuery).ToList();
+    _db.Close();
+     return res;
 }
 
 public List<Movie> GetByGenre()
 {
-    var sqlQuery = "SELECT * FROM Genre";
-    return _db.Query<Movie>(sqlQuery).ToList();
+    var sqlQuery = "SELECT * FROM Genre"; 
+    _db.Open();
+     var res=_db.Query<Movie>(sqlQuery).ToList();
+    _db.Close();
+    return res;
 }
 
-There is already an open DataReader associated with this Command which must be closed first.
+Unable to cast object of type 'System.Data.ProviderBase.DbConnectionClosedConnecting' to type 'System.Data.SqlClient.SqlInternalConnectionTds'.
