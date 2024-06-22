@@ -1,32 +1,11 @@
-X [ERROR] TS2307: Cannot find module '@ng-bootstrap/ng-bootstrap' or its corresponding type declarations. [plugin angular-compiler]
+X [ERROR] TS2551: Property 'editMovie' does not exist on type 'MovieService'. Did you mean 'getMovie'? [plugin angular-compiler]
 
-    src/app/admin/movies-management/movies-management.component.ts:2:25:
-      2 │ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-        ╵                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/app/admin/movies-management/movies-management.component.ts:34:22:
+      34 │     this.movieService.editMovie(this.editMovieData);
+         ╵                       ~~~~~~~~~
 
+  'getMovie' is declared here.
 
-X [ERROR] TS2307: Cannot find module '../services/movie.service' or its corresponding type declarations. [plugin angular-compiler]
-
-    src/app/admin/movies-management/movies-management.component.ts:3:29:
-      3 │ import { MovieService } from '../services/movie.service';
-        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] TS-992008: Could not find template file './movie-management.component.html'. [plugin angular-compiler]
-
-    src/app/admin/movies-management/movies-management.component.ts:7:15:
-      7 │   templateUrl: './movie-management.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] TS-996001: The class 'MoviesManagementComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator. [plugin angular-compiler]
-
-    src/app/app.module.ts:27:4:
-      27 │     MoviesManagementComponent,
-         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  'MoviesManagementComponent' is declared here.
-
-    src/app/admin/movies-management/movies-management.component.ts:10:13:
-      10 │ export class MoviesManagementComponent implements OnInit {
-         ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/app/services/movie.service.ts:17:2:
+      17 │   getMovie(id: number): Observable<any> {
+         ╵   ~~~~~~~~
