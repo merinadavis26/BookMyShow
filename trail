@@ -1,37 +1,69 @@
-X [ERROR] NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'. [plugin angular-compiler]
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MovieService } from '../../services/movie.service';
 
-    src/app/admin/movies-management/movies-management.component.html:37:14:
-      37 │         <form [formGroup]="movieForm" (ngSubmit)="onSubmit()">
-         ╵               ~~~~~~~~~~~~~~~~~~~~~~~
+@Component({
+  selector: 'app-movies-management',
+  templateUrl: './movies-management.component.html',
+  styleUrls: ['./movies-management.component.css']
+})
+export class MoviesManagementComponent implements OnInit {
+  movies: any[] = [];
+  selectedMovie: any = {};
+  isEdit = false;
 
-  Error occurs in the template of component MoviesManagementComponent.
+  constructor(
+    private modalService: NgbModal,
+    private movieService: MovieService
+  ) {}
 
-    src/app/admin/movies-management/movies-management.component.ts:8:15:
-      8 │   templateUrl: './movies-management.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ngOnInit(): void {
+    this.loadMovies();
+  }
 
+  loadMovies(): void {
+    this.movieService.getMovies().subscribe(movies => {
+      this.movies = movies;
+    });
+  }
 
-X [ERROR] TS2551: Property 'editMovie' does not exist on type 'MovieService'. Did you mean 'getMovie'? [plugin angular-compiler]
+  openModal(content: any, movie?: any): void {
+    if (movie) {
+      this.isEdit = true;
+      this.selectedMovie = { ...movie };
+    } else {
+      this.isEdit = false;
+      this.selectedMovie = {};
+    }
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
 
-    src/app/admin/movies-management/movies-management.component.ts:58:26:
-      58 │         this.movieService.editMovie(updatedMovie).subscribe(() =>{
-         ╵                           ~~~~~~~~~
+  onSubmit(form: NgForm): void {
+    if (form.valid) {
+      if (this.isEdit) {
+        this.movieService.editMovie(this.selectedMovie).subscribe(() => {
+          this.loadMovies();
+          this.modalService.dismissAll();
+        });
+      } else {
+        this.movieService.addMovie(this.selectedMovie).subscribe(() => {
+          this.loadMovies();
+          this.modalService.dismissAll();
+        });
+      }
+    }
+  }
 
-  'getMovie' is declared here.
+  editMovie(content: any, movie: any): void {
+    this.openModal(content, movie);
+  }
 
-    src/app/services/movie.service.ts:17:2:
-      17 │   getMovie(id: number): Observable<any> {
-         ╵   ~~~~~~~~
-
-
-X [ERROR] TS2551: Property 'editMovie' does not exist on type 'MovieService'. Did you mean 'getMovie'? [plugin angular-compiler]
-
-    src/app/admin/movies-management/movies-management.component.ts:76:22:
-      76 │     this.movieService.editMovie(this.editMovieData);
-         ╵                       ~~~~~~~~~
-
-  'getMovie' is declared here.
-
-    src/app/services/movie.service.ts:17:2:
-      17 │   getMovie(id: number): Observable<any> {
-         ╵   ~~~~~~~~
+  deleteMovie(movie: any): void {
+    if (confirm('Are you sure you want to delete this movie?')) {
+      this.movieService.deleteMovie(movie.id).subscribe(() => {
+        this.loadMovies();
+      });
+    }
+  }
+}
