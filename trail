@@ -1,177 +1,63 @@
-
-
-
-user-dashboard.html
-<div class="container-fluid">
-  <div class="row">
-    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-      <div class="position-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/user">
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/user/movies">
-              Movies
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/user/history">
-              Booking History
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">User Dashboard</h1>
-      </div>
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-</div>
-
-user-dashboard.component.css
-.sidebar {
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding-top: 20px;
-}
-
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-}
-
-
-
-admin-dashboard.html
-<div class="container-fluid">
-  <div class="row">
-    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-      <div class="position-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/admin">
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/movies">
-              Manage Movies
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/theatres">
-              Manage Theatres
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/shows">
-              Manage Shows
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Admin Dashboard</h1>
-      </div>
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-</div>
-
-admin-dashboard.component.css
-.sidebar {
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding-top: 20px;
-}
-
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-}
-
-navbar.component.html
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">BookMyShow</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item" *ngIf="authService.isAuthenticated(); else guestLinks">
-          <ng-container *ngIf="authService.getUserRole() === 'admin'; else userLinks">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin">Admin Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/movies">Manage Movies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/theatres">Manage Theatres</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/shows">Manage Shows</a>
-            </li>
-          </ng-container>
-          <ng-template #userLinks>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/user">User Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/user/movies">Movies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/user/history">Booking History</a>
-            </li>
-          </ng-template>
-          <li class="nav-item">
-            <a class="nav-link" (click)="logout()">Logout</a>
-          </li>
-        </li>
-        <ng-template #guestLinks>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/register">Register</a>
-          </li>
-        </ng-template>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-
-navbar.component.ts
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class NavbarComponent {
-  constructor(public authService: AuthService, private router: Router) { }
+export class LoginComponent {
+  username: string = '';
+  password: string = '';
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/']);
+  constructor(private authService: AuthService, private router: Router) { }
+
+  onSubmit(form: NgForm): void {
+    if (form.valid) {
+      this.authService.login({ username: this.username, password: this.password }).subscribe(response => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('role', response.role);
+          if (response.role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/user']);
+          }
+        }
+      });
+    }
   }
 }
+
+
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
+})
+export class RegisterComponent {
+  username: string = '';
+  password: string = '';
+  role: string = 'user';
+
+  constructor(private authService: AuthService, private router: Router) { }
+
+  onSubmit(form: NgForm): void {
+    if (form.valid) {
+      this.authService.register({ username: this.username, password: this.password, role: this.role }).subscribe(response => {
+        if (response.success) {
+          this.router.navigate(['/login']);
+        }
+      });
+    }
+  }
+}
+
+
