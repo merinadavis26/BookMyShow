@@ -6,12 +6,12 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
-  private apiUrl = `${environment.apiUrl}/categories`; // Adjust as per your API endpoint
+export class GenreService {
+  private apiUrl = `${environment.apiUrl}/genres`; // Adjust as per your API endpoint
 
   constructor(private http: HttpClient) {}
 
-  getCategories(): Observable<any[]> {
+  getGenres(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 }
