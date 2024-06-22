@@ -16,11 +16,15 @@ export class GenreService {
   }
 }
 
-public enum Genre
-{
-    Comedy,
-    Horror,
-    Thriller,
-    Crime,
-    Romance
-};
+CREATE TABLE Genre (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO Genre (Name) VALUES
+    ('Comedy'),
+    ('Horror'),
+    ('Thriller'),
+    ('Crime'),
+    ('Romance');
+
