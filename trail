@@ -15,3 +15,12 @@ export class GenreService {
     return this.http.get<any[]>(this.apiUrl);
   }
 }
+
+public enum Genre
+{
+    Comedy,
+    Horror,
+    Thriller,
+    Crime,
+    Romance
+};
