@@ -1,48 +1,49 @@
-<div class="container mt-5">
-  <h2 class="mb-4">Manage Movies</h2>
+import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MovieService } from '../services/movie.service';
 
-  <!-- Add New Movie Button -->
-  <div class="text-end mb-3">
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMovieModal">Add New Movie</button>
-  </div>
+@Component({
+  selector: 'app-movie-management',
+  templateUrl: './movie-management.component.html',
+  styleUrls: ['./movie-management.component.css']
+})
+export class MovieManagementComponent implements OnInit {
+  movies: any[] = [];
+  newMovie: any = {};
+  editMovieData: any = {};
 
-  <!-- List of Existing Movies -->
-  <div class="row">
-    <div class="col-md-6">
-      <ul class="list-group">
-        <li class="list-group-item" *ngFor="let movie of movies">
-          <span>{{ movie.title }}</span>
-          <div class="float-end">
-            <button class="btn btn-sm btn-primary me-2" (click)="editMovie(movie)">Edit</button>
-            <button class="btn btn-sm btn-danger" (click)="confirmDelete(movie)">Delete</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
+  constructor(private modalService: NgbModal, private movieService: MovieService) { }
 
-  <!-- Add New Movie Form Modal -->
-  <div class="modal" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form (ngSubmit)="onSubmit()" #movieForm="ngForm">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addMovieModalLabel">Add New Movie</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="title" class="form-label">Title:</label>
-              <input type="text" id="title" class="form-control" [(ngModel)]="newMovie.title" name="title" required>
-            </div>
-            <!-- Add more fields as needed -->
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+  ngOnInit(): void {
+    this.loadMovies();
+  }
+
+  loadMovies(): void {
+    this.movies = this.movieService.getMovies();
+  }
+
+  editMovie(movie: any): void {
+    this.editMovieData = { ...movie }; // Clone the movie object
+    // Open edit modal if needed
+  }
+
+  saveEditedMovie(): void {
+    this.movieService.editMovie(this.editMovieData);
+    this.editMovieData = {}; // Clear edit data
+    // Close modal if needed
+  }
+
+  confirmDelete(movie: any): void {
+    if (confirm(`Are you sure you want to delete ${movie.title}?`)) {
+      this.movieService.deleteMovie(movie.id);
+      this.loadMovies(); // Reload movies after delete
+    }
+  }
+
+  onSubmit(): void {
+    this.movieService.addMovie(this.newMovie);
+    this.newMovie = {}; // Clear new movie data
+    this.modalService.dismissAll(); // Close modal after adding
+    this.loadMovies(); // Reload movies after add
+  }
+}
