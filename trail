@@ -1,32 +1,110 @@
-<nav>
-  <a routerLink="/">Home</a>
-  <ng-container *ngIf="authService.isAuthenticated(); else guestLinks">
-    <ng-container *ngIf="authService.getUserRole() === 'admin'; else userLinks">
-      <a routerLink="/admin/movies">Manage Movies</a>
-      <a routerLink="/admin/theatres">Manage Theatres</a>
-      <a routerLink="/admin/shows">Manage Shows</a>
-    </ng-container>
-    <ng-template #userLinks>
-      <a routerLink="/user/movies">Movies</a>
-      <a routerLink="/user/history">Booking History</a>
-    </ng-template>
-    <a (click)="logout()">Logout</a>
-  </ng-container>
-  <ng-template #guestLinks>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/register">Register</a>
-  </ng-template>
+landing.component.html
+<div class="container text-center vh-100 d-flex flex-column justify-content-center align-items-center">
+  <h1 class="mb-4">Welcome to BookMyShow</h1>
+  <div>
+    <a routerLink="/login" class="btn btn-primary me-2">Login</a>
+    <a routerLink="/register" class="btn btn-secondary">Register</a>
+  </div>
+</div>
+
+
+login.component.html
+<div class="container mt-5">
+  <h2 class="mb-4">Login</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username:</label>
+      <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+</div>
+
+
+register.component.html
+<div class="container mt-5">
+  <h2 class="mb-4">Register</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username:</label>
+      <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required>
+    </div>
+    <div class="mb-3">
+      <label for="role" class="form-label">Role:</label>
+      <select id="role" class="form-select" [(ngModel)]="role" name="role" required>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+</div>
+
+
+navbar.component.html
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">BookMyShow</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" *ngIf="authService.isAuthenticated(); else guestLinks">
+          <ng-container *ngIf="authService.getUserRole() === 'admin'; else userLinks">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/movies">Manage Movies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/theatres">Manage Theatres</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/shows">Manage Shows</a>
+            </li>
+          </ng-container>
+          <ng-template #userLinks>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/user/movies">Movies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/user/history">Booking History</a>
+            </li>
+          </ng-template>
+          <li class="nav-item">
+            <a class="nav-link" (click)="logout()">Logout</a>
+          </li>
+        </li>
+        <ng-template #guestLinks>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register">Register</a>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+  </div>
 </nav>
 
 
-import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+user-dashboard.html
+<div class="container mt-5">
+  <h2>User Dashboard</h2>
+  <router-outlet></router-outlet>
+</div>
 
-@Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
-})
-export class NavbarComponent {
-  constructor(public authService: AuthService, private router: Router
+
+admin-dashboard.html
+<div class="container mt-5">
+  <h2>Admin Dashboard</h2>
+  <router-outlet></router-outlet>
+</div>
