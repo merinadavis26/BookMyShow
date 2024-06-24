@@ -1,92 +1,254 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+X [ERROR] NG9: Property 'openCityModal' does not exist on type 'MovieDetailComponent'. [plugin angular-compiler]
 
-@Component({
-  selector: 'app-seats-modal',
-  templateUrl: './seats-modal.component.html',
-  styleUrls: ['./seats-modal.component.css']
-})
-export class SeatsModalComponent implements OnInit {
-  availableSeats = Array(10).fill(0).map((x, i) => i + 1);
-  selectedSeats: number[] = [];
+    src/app/user/movie-detail/movie-detail.component.html:9:53:
+      9 │ ...s="btn btn-primary" (click)="openCityModal()">Book Tickets</button>
+        ╵                                 ~~~~~~~~~~~~~
 
-  constructor(public activeModal: NgbActiveModal) {}
+  Error occurs in the template of component MovieDetailComponent.
 
-  ngOnInit(): void {}
+    src/app/user/movie-detail/movie-detail.component.ts:11:15:
+      11 │   templateUrl: './movie-detail.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  toggleSeat(seat: number): void {
-    const index = this.selectedSeats.indexOf(seat);
-    if (index > -1) {
-      this.selectedSeats.splice(index, 1);
-    } else {
-      this.selectedSeats.push(seat);
-    }
-  }
 
-  confirm(): void {
-    this.activeModal.close(this.selectedSeats);
-  }
+X [ERROR] NG9: Property 'openSeatsModal' does not exist on type 'MovieDetailComponent'. [plugin angular-compiler]
 
-  dismiss(): void {
-    this.activeModal.dismiss();
-  }
-}
+    src/app/user/movie-detail/movie-detail.component.html:22:61:
+      22 │ ...utline-primary" (click)="openSeatsModal(show)">{{ show.time }}<...
+         ╵                             ~~~~~~~~~~~~~~
 
-<div class="modal-header">
-  <h4 class="modal-title">Select Seats</h4>
-  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <div class="d-flex flex-wrap">
-    <div 
-      *ngFor="let seat of availableSeats" 
-      class="m-2 p-2 border" 
-      [class.bg-success]="selectedSeats.includes(seat)"
-      (click)="toggleSeat(seat)"
-      style="cursor: pointer;">
-      Seat {{ seat }}
-    </div>
-  </div>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="confirm()" [disabled]="selectedSeats.length === 0">Confirm</button>
-</div>
+  Error occurs in the template of component MovieDetailComponent.
 
-import { Injectable } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+    src/app/user/movie-detail/movie-detail.component.ts:11:15:
+      11 │   templateUrl: './movie-detail.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ModalService {
-  private modalRef: NgbModalRef | null = null;
 
-  constructor(private modalService: NgbModal) {}
+X [ERROR] TS2304: Cannot find name 'openCityModal'. [plugin angular-compiler]
 
-  open(component: any, data?: any): NgbModalRef {
-    this.modalRef = this.modalService.open(component);
-    if (data) {
-      Object.keys(data).forEach(key => {
-        this.modalRef!.componentInstance[key] = data[key];
-      });
-    }
-    return this.modalRef;
-  }
+    src/app/user/movie-detail/movie-detail.component.ts:35:0:
+      35 │ openCityModal(): void{
+         ╵ ~~~~~~~~~~~~~
 
-  close(result?: any): void {
-    if (this.modalRef) {
-      this.modalRef.close(result);
-      this.modalRef = null;
-    }
-  }
 
-  dismiss(reason?: any): void {
-    if (this.modalRef) {
-      this.modalRef.dismiss(reason);
-      this.modalRef = null;
-    }
-  }
-}
+X [ERROR] TS1005: ';' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:35:15:
+      35 │ openCityModal(): void{
+         ╵                ^
+
+
+X [ERROR] TS1005: ':' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:36:8:
+      36 │   const modalRef = this.modalService.open(CityModalComponent);
+         ╵         ~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'modalRef'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:36:8:
+      36 │   const modalRef = this.modalService.open(CityModalComponent);
+         ╵         ~~~~~~~~
+
+
+X [ERROR] TS2532: Object is possibly 'undefined'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:36:19:
+      36 │   const modalRef = this.modalService.open(CityModalComponent);
+         ╵                    ~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:36:61:
+      36 │   const modalRef = this.modalService.open(CityModalComponent);
+         ╵                                                              ^
+
+
+X [ERROR] TS18004: No value exists in scope for the shorthand property 'ModalRef'. Either declare one or provide an initializer. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:37:2:
+      37 │   ModalRef.result.then((city) => {
+         ╵   ~~~~~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:37:10:
+      37 │   ModalRef.result.then((city) => {
+         ╵           ^
+
+
+X [ERROR] TS7006: Parameter 'city' implicitly has an 'any' type. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:37:24:
+      37 │   ModalRef.result.then((city) => {
+         ╵                         ~~~~
+
+
+X [ERROR] TS2532: Object is possibly 'undefined'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:38:4:
+      38 │     this.selectedCity=city;
+         ╵     ~~~~
+
+
+X [ERROR] TS2532: Object is possibly 'undefined'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:39:4:
+      39 │     this.loadTheatreAndShows(city);
+         ╵     ~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'loadTheaterAndShows'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:43:0:
+      43 │ loadTheaterAndShows(city: string): void{
+         ╵ ~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'city'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:43:20:
+      43 │ loadTheaterAndShows(city: string): void{
+         ╵                     ~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:43:24:
+      43 │ loadTheaterAndShows(city: string): void{
+         ╵                         ^
+
+
+X [ERROR] TS2693: 'string' only refers to a type, but is being used as a value here. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:43:26:
+      43 │ loadTheaterAndShows(city: string): void{
+         ╵                           ~~~~~~
+
+
+X [ERROR] TS1005: ';' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:43:33:
+      43 │ loadTheaterAndShows(city: string): void{
+         ╵                                  ^
+
+
+X [ERROR] TS1005: ':' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:44:6:
+      44 │   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+         ╵       ^
+
+
+X [ERROR] TS2304: Cannot find name 'city'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:44:40:
+      44 │   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+         ╵                                         ~~~~
+
+
+X [ERROR] TS7006: Parameter 'theatres' implicitly has an 'any' type. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:44:56:
+      44 │   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+         ╵                                                         ~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'openSeatsModal'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:50:0:
+      50 │ openSeatsModal(show: any): void{
+         ╵ ~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'show'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:50:15:
+      50 │ openSeatsModal(show: any): void{
+         ╵                ~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:50:19:
+      50 │ openSeatsModal(show: any): void{
+         ╵                    ^
+
+
+X [ERROR] TS2693: 'any' only refers to a type, but is being used as a value here. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:50:21:
+      50 │ openSeatsModal(show: any): void{
+         ╵                      ~~~
+
+
+X [ERROR] TS1005: ';' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:50:25:
+      50 │ openSeatsModal(show: any): void{
+         ╵                          ^
+
+
+X [ERROR] TS1005: ':' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:51:8:
+      51 │   const modalRef=this.modalService.open(SeatsModalComponent);
+         ╵         ~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'modalRef'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:51:8:
+      51 │   const modalRef=this.modalService.open(SeatsModalComponent);
+         ╵         ~~~~~~~~
+
+
+X [ERROR] TS2532: Object is possibly 'undefined'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:51:17:
+      51 │   const modalRef=this.modalService.open(SeatsModalComponent);
+         ╵                  ~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:51:60:
+      51 │   const modalRef=this.modalService.open(SeatsModalComponent);
+         ╵                                                             ^
+
+
+X [ERROR] TS2552: Cannot find name 'NgbModalRef'. Did you mean 'NgbModal'? [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:52:2:
+      52 │   NgbModalRef.componentInstance.show= show;
+         ╵   ~~~~~~~~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:52:13:
+      52 │   NgbModalRef.componentInstance.show= show;
+         ╵              ^
+
+
+X [ERROR] TS2304: Cannot find name 'show'. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:52:38:
+      52 │   NgbModalRef.componentInstance.show= show;
+         ╵                                       ~~~~
+
+
+X [ERROR] TS1005: ',' expected. [plugin angular-compiler]
+
+    src/app/user/movie-detail/movie-detail.component.ts:52:42:
+      52 │   NgbModalRef.componentInstance.show= show;
+         ╵                                           ^
+
+
+X [ERROR] Expected identifier but found ":"
+
+    src/app/user/movie-detail/movie-detail.component.ts:99:14:
+      99 │     ModalRef, : .result.then((city) => {
