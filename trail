@@ -269,3 +269,372 @@ export class BookingService {
     return this.http.post<any>(this.apiUrl, booking);
   }
 }
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:4:48:
+      4 │       <form (ngSubmit)="onSubmit()" #movieForm="ngForm">
+        ╵                                                 ~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:7:72:
+      7 │ ...m-control" id="name" name="name" [(ngModel)]="movie.name" required>
+        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:11:72:
+      11 │ ...Rating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:21:68:
+      21 │ ...category" name="category" [(ngModel)]="movie.categoryId" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:27:62:
+      27 │ ...ect" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
+         ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:33:86:
+      33 │ ...Date" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
+         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/add-movie/add-movie.component.html:37:82:
+      37 │ ...="duration" name="duration" [(ngModel)]="movie.duration" required>
+         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AddMovieComponent.
+
+    src/app/admin/add-movie/add-movie.component.ts:10:15:
+      10 │   templateUrl: './add-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8001: 'router-outlet' is not a known element:
+1. If 'router-outlet' is an Angular component, then verify that it is part of this module.
+2. If 'router-outlet' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. [plugin angular-compiler]
+
+    src/app/admin/admin-dashboard/admin-dashboard.component.html:34:8:
+      34 │         <router-outlet></router-outlet>
+         ╵         ~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AdminDashboardComponent.
+
+    src/app/admin/admin-dashboard/admin-dashboard.component.ts:5:15:
+      5 │   templateUrl: './admin-dashboard.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:4:47:
+      4 │       <form (ngSubmit)="onSubmit()" #editForm="ngForm">
+        ╵                                                ~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:7:72:
+      7 │ ...m-control" id="name" name="name" [(ngModel)]="movie.name" required>
+        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:11:72:
+      11 │ ...Rating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:21:68:
+      21 │ ...category" name="category" [(ngModel)]="movie.categoryId" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:27:62:
+      27 │ ...ect" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
+         ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:33:86:
+      33 │ ...Date" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
+         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/admin/edit-movie/edit-movie.component.html:37:82:
+      37 │ ...="duration" name="duration" [(ngModel)]="movie.duration" required>
+         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component EditMovieComponent.
+
+    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
+      10 │   templateUrl: './edit-movie.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'routerLink' since it isn't a known property of 'button'. [plugin angular-compiler]       
+
+    src/app/admin/movies-management/movies-management.component.html:7:45:
+      7 │ ...imary mb-3" [routerLink]="['/admin/add-movies/add']">Add New Mov...
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component MoviesManagementComponent.
+
+    src/app/admin/movies-management/movies-management.component.ts:8:15:
+      8 │   templateUrl: './movies-management.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/admin/movies-management/movies-management.component.html:37:26:
+      37 │         <form #movieForm="ngForm" (ngSubmit)="onSubmit(movieForm)">
+         ╵                           ~~~~~~
+
+  Error occurs in the template of component MoviesManagementComponent.
+
+    src/app/admin/movies-management/movies-management.component.ts:8:15:
+      8 │   templateUrl: './movies-management.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8001: 'router-outlet' is not a known element:
+1. If 'router-outlet' is an Angular component, then verify that it is part of this module.
+2. If 'router-outlet' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. [plugin angular-compiler]
+
+    src/app/app.component.html:2:0:
+      2 │ <router-outlet />
+        ╵ ~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component AppComponent.
+
+    src/app/app.component.ts:5:15:
+      5 │   templateUrl: './app.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "./edit-movie/edit-movie.component"
+
+    src/app/app.module.ts:26:35:
+      26 │ ...t { EditMovieComponent } from './edit-movie/edit-movie.component';
+         ╵                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module './edit-movie/edit-movie.component' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/app.module.ts:26:35:
+      26 │ ...t { EditMovieComponent } from './edit-movie/edit-movie.component';
+         ╵                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-991010: Value at position 16 in the NgModule.declarations of AppModule is not a reference
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/app.module.ts:30:16:
+      30 │   declarations: [
+         ╵                 ^
+
+  Unknown reference.
+
+    src/app/app.module.ts:47:4:
+      47 │     EditMovieComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:9:63:
+      9 │ ...        <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+        ╵                                                               ~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:12:75:
+      12 │ ...="form-control mb-2" [(ngModel)]="username" name="username" pla...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/login/login.component.html:16:79:
+      16 │ ...="form-control mb-2" [(ngModel)]="password" name="password" pla...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/auth/login/login.component.ts:8:15:
+      8 │   templateUrl: './login.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:3:59:
+      3 │   <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
+        ╵                                                            ~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:6:60:
+      6 │ ...class="form-control" [(ngModel)]="username" name="username" requ...
+        ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:10:64:
+      10 │ ...class="form-control" [(ngModel)]="password" name="password" req...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
+
+    src/app/auth/register/register.component.html:14:44:
+      14 │ ...role" class="form-select" [(ngModel)]="role" name="role" required>
+         ╵                              ~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component RegisterComponent.
+
+    src/app/auth/register/register.component.ts:8:15:
+      8 │   templateUrl: './register.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'routerLink' since it isn't a known property of 'a'. [plugin angular-compiler]
+
+    src/app/user/movie-list/movie-list.component.html:4:7:
+      4 │     <a [routerLink]="['/user/movies',movie.id]">Details</a>
+        ╵        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component MovieListComponent.
+
+    src/app/user/movie-list/movie-list.component.ts:6:15:
+      6 │   templateUrl: './movie-list.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
