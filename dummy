@@ -1,27 +1,92 @@
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="card">
-        <img [src]="movie.themePhotoPath" class="card-img-top" alt="{{ movie.name }}">
-        <div class="card-body">
-          <h5 class="card-title">{{ movie.name }}</h5>
-          <p class="card-text">{{ movie.description }}</p>
-          <button class="btn btn-primary" (click)="openLocationModal()">Book Tickets</button>
-        </div>
-      </div>
-    </div>
-  </div>
+import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-  <div *ngIf="theaters.length > 0" class="mt-4">
-    <h4>Theaters in {{ selectedLocation }}</h4>
-    <div *ngFor="let theater of theaters" class="card mb-2">
-      <div class="card-body">
-        <h5 class="card-title">{{ theater.name }}</h5>
-        <p class="card-text">{{ theater.address }}</p>
-        <div *ngFor="let show of theater.shows">
-          <button class="btn btn-outline-primary" (click)="openSeatsModal(show)">{{ show.time }}</button>
-        </div>
-      </div>
+@Component({
+  selector: 'app-seats-modal',
+  templateUrl: './seats-modal.component.html',
+  styleUrls: ['./seats-modal.component.css']
+})
+export class SeatsModalComponent implements OnInit {
+  availableSeats = Array(10).fill(0).map((x, i) => i + 1);
+  selectedSeats: number[] = [];
+
+  constructor(public activeModal: NgbActiveModal) {}
+
+  ngOnInit(): void {}
+
+  toggleSeat(seat: number): void {
+    const index = this.selectedSeats.indexOf(seat);
+    if (index > -1) {
+      this.selectedSeats.splice(index, 1);
+    } else {
+      this.selectedSeats.push(seat);
+    }
+  }
+
+  confirm(): void {
+    this.activeModal.close(this.selectedSeats);
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+}
+
+<div class="modal-header">
+  <h4 class="modal-title">Select Seats</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="d-flex flex-wrap">
+    <div 
+      *ngFor="let seat of availableSeats" 
+      class="m-2 p-2 border" 
+      [class.bg-success]="selectedSeats.includes(seat)"
+      (click)="toggleSeat(seat)"
+      style="cursor: pointer;">
+      Seat {{ seat }}
     </div>
   </div>
 </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="confirm()" [disabled]="selectedSeats.length === 0">Confirm</button>
+</div>
+
+import { Injectable } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ModalService {
+  private modalRef: NgbModalRef | null = null;
+
+  constructor(private modalService: NgbModal) {}
+
+  open(component: any, data?: any): NgbModalRef {
+    this.modalRef = this.modalService.open(component);
+    if (data) {
+      Object.keys(data).forEach(key => {
+        this.modalRef!.componentInstance[key] = data[key];
+      });
+    }
+    return this.modalRef;
+  }
+
+  close(result?: any): void {
+    if (this.modalRef) {
+      this.modalRef.close(result);
+      this.modalRef = null;
+    }
+  }
+
+  dismiss(reason?: any): void {
+    if (this.modalRef) {
+      this.modalRef.dismiss(reason);
+      this.modalRef = null;
+    }
+  }
+}
