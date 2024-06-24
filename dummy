@@ -1,6 +1,27 @@
-Duplicate identifier 'selectedCity'.ts(2300)
-Property 'selectedCity' has no initializer and is not definitely assigned in the constructor.ts(2564)
-(property) CityModalComponent.selectedCity: string
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <img [src]="movie.themePhotoPath" class="card-img-top" alt="{{ movie.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ movie.name }}</h5>
+          <p class="card-text">{{ movie.description }}</p>
+          <button class="btn btn-primary" (click)="openLocationModal()">Book Tickets</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-Duplicate identifier 'selectedCity'.ts(2300)
-(method) CityModalComponent.selectedCity(city: string): void
+  <div *ngIf="theaters.length > 0" class="mt-4">
+    <h4>Theaters in {{ selectedLocation }}</h4>
+    <div *ngFor="let theater of theaters" class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ theater.name }}</h5>
+        <p class="card-text">{{ theater.address }}</p>
+        <div *ngFor="let show of theater.shows">
+          <button class="btn btn-outline-primary" (click)="openSeatsModal(show)">{{ show.time }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
