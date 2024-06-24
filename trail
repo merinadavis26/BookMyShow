@@ -787,13 +787,52 @@ export class AddMovieComponent implements OnInit {
 }
 
 
-No overload matches this call.
-  Overload 1 of 3, '(name: string, value: string | Blob): void', gave the following error.
-    Argument of type 'File | null' is not assignable to parameter of type 'string | Blob'.
-      Type 'null' is not assignable to type 'string | Blob'.
-  Overload 2 of 3, '(name: string, value: string): void', gave the following error.
-    Argument of type 'File | null' is not assignable to parameter of type 'string'.
-      Type 'null' is not assignable to type 'string'.
-  Overload 3 of 3, '(name: string, blobValue: Blob, filename?: string | undefined): void', gave the following error.
-    Argument of type 'File | null' is not assignable to parameter of type 'Blob'.
-      Type 'null' is not assignable to type 'Blob'.
+Category
+: 
+['The Category field is required.']
+Genre
+: 
+['The Genre field is required.']
+ThemePhotoPath
+: 
+['The ThemePhotoPath field is required.']
+
+saveMovie() {
+  this.movieService.addMovie(this.movie).subscribe(() => {
+    const formData = new FormData();
+    formData.append('name',this.movie.name);
+    formData.append('imdbRating',this.movie.imdbRating);
+    formData.append('category',this.movie.category);
+    formData.append('genre',this.movie.genre);
+    formData.append('realseDate',this.movie.realseDate);
+    formData.append('duration',this.movie.duration);
+    formData.append('ThemePhotoPath',this.movie.themePhoto);
+
+
+    this.router.navigate(['/admin/movies-management']);
+  });
+}
+public class Movie
+{
+    [Key]
+    public int? Id { get; set; }
+
+    public string Name { get; set; }
+
+    public decimal ImdbRating { get; set; }
+
+    //[EnumDataType(typeof(MovieCategory))]
+    public string Category { get; set; }
+
+    
+    //[EnumDataType(typeof(MovieGenre))]
+    public string Genre { get; set; }
+
+    
+    public DateTime ReleaseDate { get; set; }
+
+    public int Duration { get; set; }
+    
+  
+
+    public string ThemePhotoPath { get; set; }
