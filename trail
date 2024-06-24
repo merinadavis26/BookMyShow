@@ -1,112 +1,271 @@
-ng generate component edit-movie
-
-edit-movie.component.html
-
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Edit Movie</h5>
-    <form (ngSubmit)="onSubmit()" #editForm="ngForm">
-      <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" name="name" [(ngModel)]="movie.name" required>
+movie-list component
+<div class="container">
+  <div class="row">
+    <div class="col-md-4" *ngFor="let movie of movies">
+      <div class="card">
+        <img src="assets/dummy-movie.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ movie.name }}</h5>
+          <p class="card-text">IMDb Rating: {{ movie.imdbRating }}</p>
+          <a [routerLink]="['/user-dashboard/movies', movie.id]" class="btn btn-primary">Book Now</a>
+        </div>
       </div>
-      <div class="mb-3">
-        <label for="imdbRating" class="form-label">IMDb Rating</label>
-        <select class="form-select" id="imdbRating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
-          <option value="1">1 Star</option>
-          <option value="2">2 Stars</option>
-          <option value="3">3 Stars</option>
-          <option value="4">4 Stars</option>
-          <option value="5">5 Stars</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select class="form-select" id="category" name="category" [(ngModel)]="movie.categoryId" required>
-          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="genre" class="form-label">Genre</label>
-        <select class="form-select" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
-          <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="releaseDate" class="form-label">Release Date</label>
-        <input type="date" class="form-control" id="releaseDate" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
-      </div>
-      <div class="mb-3">
-        <label for="duration" class="form-label">Duration (minutes)</label>
-        <input type="number" class="form-control" id="duration" name="duration" [(ngModel)]="movie.duration" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    </div>
   </div>
 </div>
 
-
-edit-movie.component.ts
-
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Movie } from '../models/movie'; // Adjust path as needed
-import { MovieService } from '../services/movie.service'; // Adjust path as needed
-import { Category } from '../models/category'; // Adjust path as needed
-import { Genre } from '../models/genre'; // Adjust path as needed
-import { CategoryService } from '../services/category.service'; // Adjust path as needed
-import { GenreService } from '../services/genre.service'; // Adjust path as needed
-import { NgForm } from '@angular/forms';
+import { MovieService } from '../../services/movie.service';
 
 @Component({
-  selector: 'app-edit-movie',
-  templateUrl: './edit-movie.component.html',
-  styleUrls: ['./edit-movie.component.css']
+  selector: 'app-movie-list',
+  templateUrl: './movie-list.component.html',
+  styleUrls: ['./movie-list.component.css']
 })
-export class EditMovieComponent implements OnInit {
+export class MovieListComponent implements OnInit {
+  movies: any[];
+
+  constructor(private movieService: MovieService) { }
+
+  ngOnInit(): void {
+    this.loadMovies();
+  }
+
+  loadMovies(): void {
+    this.movieService.getAllMovies().subscribe(data => {
+      this.movies = data;
+    });
+  }
+}
+
+movie-detail component
+<div class="container">
+  <h2>Select Location</h2>
+  <select class="form-select" [(ngModel)]="selectedLocation" (change)="loadTheatres()">
+    <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
+  </select>
+
+  <div *ngIf="theatres.length > 0">
+    <h2>Select Theatre</h2>
+    <select class="form-select" [(ngModel)]="selectedTheatre" (change)="loadShows()">
+      <option *ngFor="let theatre of theatres" [value]="theatre.id">{{ theatre.name }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="shows.length > 0">
+    <h2>Select Show</h2>
+    <select class="form-select" [(ngModel)]="selectedShow">
+      <option *ngFor="let show of shows" [value]="show.id">{{ show.showtime | date: 'short' }}</option>
+    </select>
+  </div>
+
+  <button class="btn btn-primary" [routerLink]="['/user-dashboard/booking', selectedShow]">Next</button>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { LocationService } from '../../services/location.service';
+import { TheatreService } from '../../services/theatre.service';
+import { ShowService } from '../../services/show.service';
+
+@Component({
+  selector: 'app-movie-detail',
+  templateUrl: './movie-detail.component.html',
+  styleUrls: ['./movie-detail.component.css']
+})
+export class MovieDetailComponent implements OnInit {
   movieId: number;
-  movie: Movie = new Movie();
-  categories: Category[];
-  genres: Genre[];
+  locations: any[];
+  theatres: any[] = [];
+  shows: any[] = [];
+  selectedLocation: number;
+  selectedTheatre: number;
+  selectedShow: number;
 
   constructor(
-    private movieService: MovieService,
-    private categoryService: CategoryService,
-    private genreService: GenreService,
     private route: ActivatedRoute,
-    private router: Router
+    private locationService: LocationService,
+    private theatreService: TheatreService,
+    private showService: ShowService
   ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.movieId = +params['id'];
-      this.loadMovieDetails();
-    });
-    this.loadCategories();
-    this.loadGenres();
-  }
-
-  loadMovieDetails(): void {
-    this.movieService.getMovie(this.movieId).subscribe((data: Movie) => {
-      this.movie = data;
+      this.loadLocations();
     });
   }
 
-  loadCategories(): void {
-    this.categoryService.getAllCategories().subscribe((data: Category[]) => {
-      this.categories = data;
+  loadLocations(): void {
+    this.locationService.getAllLocations().subscribe(data => {
+      this.locations = data;
     });
   }
 
-  loadGenres(): void {
-    this.genreService.getAllGenres().subscribe((data: Genre[]) => {
-      this.genres = data;
+  loadTheatres(): void {
+    this.theatreService.getTheatresByLocation(this.selectedLocation).subscribe(data => {
+      this.theatres = data;
     });
   }
 
-  onSubmit(): void {
-    this.movieService.editMovie(this.movie).subscribe(() => {
-      this.router.navigate(['/movies-management']);
+  loadShows(): void {
+    this.showService.getShowsByMovieAndTheatre(this.movieId, this.selectedTheatre).subscribe(data => {
+      this.shows = data;
     });
+  }
+}
+
+location serice
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LocationService {
+
+  private apiUrl = 'https://api.example.com/locations'; // Replace with your API endpoint
+
+  constructor(private http: HttpClient) { }
+
+  getAllLocations(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
+  }
+}
+
+theatre service
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TheatreService {
+
+  private apiUrl = 'https://api.example.com/theatres'; // Replace with your API endpoint
+
+  constructor(private http: HttpClient) { }
+
+  getTheatresByLocation(locationId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/byLocation/${locationId}`);
+  }
+}
+
+show service
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ShowService {
+
+  private apiUrl = 'https://api.example.com/shows'; // Replace with your API endpoint
+
+  constructor(private http: HttpClient) { }
+
+  getShowsByMovieAndTheatre(movieId: number, theatreId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/byMovieAndTheatre/${movieId}/${theatreId}`);
+  }
+}
+
+booking component
+<div class="container">
+  <h2>Select Seats</h2>
+  <div class="mb-3">
+    <label for="seats" class="form-label">Number of Seats</label>
+    <input type="number" class="form-control" id="seats" [(ngModel)]="numberOfSeats" required>
+  </div>
+  <button class="btn btn-primary" [routerLink]="['/user-dashboard/checkout', showId, numberOfSeats]">Checkout</button>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-booking',
+  templateUrl: './booking.component.html',
+  styleUrls: ['./booking.component.css']
+})
+export class BookingComponent implements OnInit {
+  showId: number;
+  numberOfSeats: number;
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.showId = +params['id'];
+    });
+  }
+}
+
+checkout component
+<div class="container">
+  <h2>Checkout</h2>
+  <p>Show ID: {{ showId }}</p>
+  <p>Number of Seats: {{ numberOfSeats }}</p>
+  <button class="btn btn-primary" (click)="confirmBooking()">Confirm Booking</button>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BookingService } from '../../services/booking.service';
+
+@Component({
+  selector: 'app-checkout',
+  templateUrl: './checkout.component.html',
+  styleUrls: ['./checkout.component.css']
+})
+export class CheckoutComponent implements OnInit {
+  showId: number;
+  numberOfSeats: number;
+
+  constructor(
+    private route: ActivatedRoute,
+    private bookingService: BookingService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.showId = +params['id'];
+      this.numberOfSeats = +params['seats'];
+    });
+  }
+
+  confirmBooking(): void {
+    const booking = {
+      userId: 1, // Assuming user ID is 1 for simplicity
+      showId: this.showId,
+      seats: this.numberOfSeats,
+      totalPrice: this.numberOfSeats * 10 // Replace with actual pricing logic
+    };
+
+    this.bookingService.createBooking(booking).subscribe(() => {
+      this.router.navigate(['/user-dashboard/history']);
+    });
+  }
+}
+
+booking service
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BookingService {
+
+  private apiUrl = 'https://api.example.com/bookings'; // Replace with your API endpoint
+
+  constructor(private http: HttpClient) { }
+
+  createBooking(booking: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, booking);
   }
 }
