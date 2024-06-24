@@ -638,3 +638,28 @@ X [ERROR] NG8002: Can't bind to 'routerLink' since it isn't a known property of 
     src/app/user/movie-list/movie-list.component.ts:6:15:
       6 │   templateUrl: './movie-list.component.html',
         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+onSubmit() {
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+
+      this.movieService.uploadPhoto(formData).subscribe((response: any) => {
+        this.movie.themePhotoPath = response.path;
+        this.saveMovie();
+      });
+    } else {
+      this.saveMovie();
+    }
+  }
+
+onFileChange(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+saveMovie() {
+    this.movieService.addMovie(this.movie).subscribe(() => {
+      this.router.navigate(['/admin/movies-management']);
+    });
+  }
