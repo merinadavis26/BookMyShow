@@ -1,69 +1,83 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MovieService } from '../../services/movie.service';
-
-@Component({
-  selector: 'app-movies-management',
-  templateUrl: './movies-management.component.html',
-  styleUrls: ['./movies-management.component.css']
-})
-export class MoviesManagementComponent implements OnInit {
-  movies: any[] = [];
-  selectedMovie: any = {};
-  isEdit = false;
-
-  constructor(
-    private modalService: NgbModal,
-    private movieService: MovieService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadMovies();
-  }
-
-  loadMovies(): void {
-    this.movieService.getMovies().subscribe(movies => {
-      this.movies = movies;
-    });
-  }
-
-  openModal(content: any, movie?: any): void {
-    if (movie) {
-      this.isEdit = true;
-      this.selectedMovie = { ...movie };
-    } else {
-      this.isEdit = false;
-      this.selectedMovie = {};
-    }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
-  }
-
-  onSubmit(form: NgForm): void {
-    if (form.valid) {
-      if (this.isEdit) {
-        this.movieService.editMovie(this.selectedMovie).subscribe(() => {
-          this.loadMovies();
-          this.modalService.dismissAll();
-        });
-      } else {
-        this.movieService.addMovie(this.selectedMovie).subscribe(() => {
-          this.loadMovies();
-          this.modalService.dismissAll();
-        });
-      }
-    }
-  }
-
-  editMovie(content: any, movie: any): void {
-    this.openModal(content, movie);
-  }
-
-  deleteMovie(movie: any): void {
-    if (confirm('Are you sure you want to delete this movie?')) {
-      this.movieService.deleteMovie(movie.id).subscribe(() => {
-        this.loadMovies();
-      });
-    }
-  }
-}
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h3>Movies Management</h3>
+      </div>
+      <div class="card-body">
+        <button class="btn btn-primary mb-3" [routerLink]="['/admin/add-movie']">Add New Movie</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let movie of movies">
+              <td>{{ movie.name }}</td>
+              <td>
+                <button class="btn btn-warning mr-2" (click)="openModal(content,movie)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteMovie(movie)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Modal for Add/Edit Movie -->
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">{{ isEdit ? 'Edit Movie' : 'Add New Movie' }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #movieForm="ngForm" (ngSubmit)="onSubmit(movieForm)">
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="selectedMovie.name" required>
+          </div>
+          <div class="mb-3">
+            <label for="imdbRating" class="form-label">IMDb Rating</label>
+            <select class="form-select" id="imdbRating" name="imdbRating" [(ngModel)]="selectedMovie.imdbRating" required>
+              <option value="1">1 Star</option>
+              <option value="2">2 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="5">5 Stars</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" [(ngModel)]="movie.category" required>
+              <option *ngFor="let category of categories" [value]="category.name">{{ category.name }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="genre" class="form-label">Genre</label>
+            <select class="form-select" id="genre" name="genre" [(ngModel)]="movie.genre" required>
+              <option *ngFor="let genre of genres" [value]="genre.name">{{ genre.name }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="releaseDate" class="form-label">Release Date</label>
+            <input type="date" class="form-control" id="releaseDate" name="releaseDate" [(ngModel)]="selectedMovie.releaseDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" id="duration" name="duration" [(ngModel)]="selectedMovie.duration" required>
+          </div>
+          <div class="mb-3">
+            <label for="themePhoto" class="form-label">Theme Photo</label>
+            <input type="file" class="form-control" id="themePhotoPath" name="themePhotoPath" (change)="onFileChange($event)" [(ngModel)]="selectedMovie.themePhotoPath" accept="image/*" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+            <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save changes' : 'Add Movie' }}</button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+  </div>
