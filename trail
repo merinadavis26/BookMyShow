@@ -663,3 +663,125 @@ saveMovie() {
       this.router.navigate(['/admin/movies-management']);
     });
   }
+
+
+[ApiController]
+[Route("api/[controller]")]
+public class MoviesController : ControllerBase
+{
+    private readonly string _uploadFolderPath = "uploads"; // Path to store uploaded files
+
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImage()
+    {
+        try
+        {
+            var file = Request.Form.Files[0];
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), _uploadFolderPath);
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { FilePath = Path.Combine(_uploadFolderPath, uniqueFileName) });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+}
+
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MovieService } from '../services/movie.service';
+import { CategoryService } from '../services/category.service';
+import { GenreService } from '../services/genre.service';
+
+@Component({
+  selector: 'app-add-movie',
+  templateUrl: './add-movie.component.html',
+  styleUrls: ['./add-movie.component.css']
+})
+export class AddMovieComponent implements OnInit {
+  movie: any = {
+    name: '',
+    imdbRating: '',
+    categoryId: '',
+    genreId: '',
+    releaseDate: '',
+    duration: '',
+    themePhotoPath: ''
+  };
+  categories: any[] = [];
+  genres: any[] = [];
+  selectedFile: File | null = null;
+
+  constructor(
+    private movieService: MovieService,
+    private categoryService: CategoryService,
+    private genreService: GenreService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadGenres();
+  }
+
+  loadCategories() {
+    this.categoryService.getCategories().subscribe((data: any) => {
+      this.categories = data;
+    });
+  }
+
+  loadGenres() {
+    this.genreService.getGenres().subscribe((data: any) => {
+      this.genres = data;
+    });
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
+  onSubmit() {
+    if (this.selectedFile) {
+      this.uploadImageAndSaveMovie();
+    } else {
+      this.saveMovie();
+    }
+  }
+
+  uploadImageAndSaveMovie() {
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    this.movieService.uploadImage(formData).subscribe((response: any) => {
+      this.movie.themePhotoPath = response.filePath;
+      this.saveMovie();
+    });
+  }
+
+  saveMovie() {
+    this.movieService.addMovie(this.movie).subscribe(() => {
+      this.router.navigate(['/admin/movies-management']);
+    });
+  }
+}
