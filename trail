@@ -787,52 +787,46 @@ export class AddMovieComponent implements OnInit {
 }
 
 
-Category
-: 
-['The Category field is required.']
-Genre
-: 
-['The Genre field is required.']
-ThemePhotoPath
-: 
-['The ThemePhotoPath field is required.']
-
-saveMovie() {
-  this.movieService.addMovie(this.movie).subscribe(() => {
-    const formData = new FormData();
-    formData.append('name',this.movie.name);
-    formData.append('imdbRating',this.movie.imdbRating);
-    formData.append('category',this.movie.category);
-    formData.append('genre',this.movie.genre);
-    formData.append('realseDate',this.movie.realseDate);
-    formData.append('duration',this.movie.duration);
-    formData.append('ThemePhotoPath',this.movie.themePhoto);
-
-
-    this.router.navigate(['/admin/movies-management']);
-  });
-}
-public class Movie
+public Movie Add(Movie movie)
 {
-    [Key]
-    public int? Id { get; set; }
+    using (var connection = _dapperContext.CreateConnection())
+    {
 
-    public string Name { get; set; }
-
-    public decimal ImdbRating { get; set; }
-
-    //[EnumDataType(typeof(MovieCategory))]
-    public string Category { get; set; }
-
+        var sqlQuery = "INSERT INTO Movie (Name,ImdbRating,Category,Genre,ReleaseDate,Duration,ThemePhotoPath) VALUES (@Name,@ImdbRating,@Category,@Genre,@ReleaseDate,@Duration,@ThemePhotoPath)";
+        connection.Query<Movie>(sqlQuery);
+        return movie;
+    }
+   
     
-    //[EnumDataType(typeof(MovieGenre))]
-    public string Genre { get; set; }
+}
 
-    
-    public DateTime ReleaseDate { get; set; }
+System.Data.SqlClient.SqlException
+  HResult=0x80131904
+  Message=Must declare the scalar variable "@Name".
+  Source=Core .Net SqlClient Data Provider
+  StackTrace:
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite, String method)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior)
+   at Dapper.SqlMapper.<QueryImpl>d__147`1.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType)
+   at Book_My_Show_DAL.Implementations.MovieServices.Add(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show_DAL\Implementations\MovieServices.cs:line 29
+   at Book_My_Show_BL.Implementations.MovieServicesBL.Add(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show_BL\Implementations\MovieServicesBL.cs:line 20
+   at Book_My_Show.Controllers.MovieController.Post(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show\Controllers\MovieController.cs:line 36
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
 
-    public int Duration { get; set; }
-    
-  
-
-    public string ThemePhotoPath { get; set; }
