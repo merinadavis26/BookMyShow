@@ -1,52 +1,21 @@
 <div class="modal-header">
-  <h4 class="modal-title">Choose City</h4>
-  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
-    <span aria-hidden="true">&times;</span>
-  </button>
+  <h5 class="modal-title">Choose City</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
 </div>
 <div class="modal-body">
-  <div *ngIf="cities.length > 0; else noCities">
-    <button *ngFor="let city of cities" class="btn btn-outline-primary m-2" (click)="selectCity(city)">
-      {{ city }}
-    </button>
+  <div *ngIf="!selectedCity">
+    <h6>Select a city:</h6>
+    <div *ngFor="let city of cities" class="mb-2">
+      <button class="btn btn-primary" (click)="selectCity(city)">{{ city }}</button>
+    </div>
   </div>
-  <ng-template #noCities>
-    <p>No cities available.</p>
-  </ng-template>
+  <div *ngIf="selectedCity">
+    <h6>Theatres in {{ selectedCity }}:</h6>
+    <div *ngFor="let theatre of theatres" class="mb-4">
+      <h5>{{ theatre.name }}</h5>
+      <div *ngFor="let show of theatre.shows">
+        <button class="btn btn-outline-primary" (click)="selectShow(show)">{{ show.time }}</button>
+      </div>
+    </div>
+  </div>
 </div>
-
-import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TheatreService } from '../../services/theatre.service';
-
-@Component({
-  selector: 'app-city-modal',
-  templateUrl: './city-modal.component.html',
-  styleUrls: ['./city-modal.component.css']
-})
-export class CityModalComponent implements OnInit {
-  cities: string[] = [];
-
-  constructor(
-    public activeModal: NgbActiveModal,
-    private theatreService: TheatreService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadCities();
-  }
-
-  loadCities(): void {
-    this.theatreService.getCities().subscribe((cities: string[]) => {
-      this.cities = cities;
-    });
-  }
-
-  dismiss(): void {
-    this.activeModal.dismiss();
-  }
-
-  selectCity(city: string): void {
-    this.activeModal.close(city);
-  }
-}
