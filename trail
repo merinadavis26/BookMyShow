@@ -1,108 +1,37 @@
-city-modal.component.ts:40 
- ERROR 
-TypeError: Cannot read properties of undefined (reading 'id')
-    at _CityModalComponent.loadShows (city-modal.component.ts:63:59)
-    at city-modal.component.ts:43:14
-    at Array.forEach (<anonymous>)
-    at Object.next (city-modal.component.ts:42:21)
-    at ConsumerObserver2.next (Subscriber.js:96:33)
-    at Subscriber2._next (Subscriber.js:63:26)
-    at Subscriber2.next (Subscriber.js:34:18)
-    at map.js:7:24
-    at OperatorSubscriber2._this._next (OperatorSubscriber.js:15:21)
-    at Subscriber2.next (Subscriber.js:34:18)
-
-import { Component, Input, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TheatreService } from '../../services/theatre.service';
-import { ShowService } from 'src/app/services/show.service';
-
-@Component({
-  selector: 'app-city-modal',
-  templateUrl: './city-modal.component.html',
-  styleUrls: ['./city-modal.component.css']
-})
-export class CityModalComponent implements OnInit {
-  @Input() movie: any;
-  cities: string[] = [];
-  theatres: any[]=[];
-  selectedCity: string | null=null ;
-
-  constructor(
-    public activeModal: NgbActiveModal,
-    private theatreService: TheatreService,
-    private showService: ShowService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadCities();
-  }
-
-  loadCities(): void {
-    this.theatreService.getCities().subscribe((cities: string[]) => {
-      this.cities = cities;
-    });
-  }
-
-  dismiss(): void {
-    this.activeModal.dismiss();
-  }
-
-  selectCity(city: string): void {
-    this.selectedCity=city;   
-    // this.loadTheatres(city);
-    this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
-      this.theatres =theatres;
-      this.theatres.forEach(theatre =>{
-        this.loadShows(theatre);
-        // this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
-        //   console.log('shows for theatre ID: ${theatre.id}:',shows);
-        //   theatre.shows = shows;
-        // });
-      });
-    });
-  }
-
-  // loadTheatres(city:string): void{
-  //   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
-  //     this.theatres =theatres;
-  //     this.theatres.forEach(theatre =>{
-  //       this.loadShows(theatre);
-  //     });
-  //   });
-  // }
-
-  loadShows(theatre:any):void{
-    console.log('fetching shows for theatre ID: ${theatre.id} and movie ID: ${this.movie.id');
-    this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
-      console.log('shows for theatre ID: ${theatre.id}:',shows);
-      theatre.shows = shows;
-    });
-  }
-
-  selectShow(show: any):void{
-    this.activeModal.close({city: this.selectCity, show});
-  }
-}
-
 <div class="modal-header">
-    <h5 class="modal-title">Choose City</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
-  </div>
-  <div class="modal-body">
-    <div *ngIf="!selectedCity">
-      <h6>Select a city:</h6>
-      <div *ngFor="let city of cities" class="mb-2">
-        <button class="btn btn-primary" (click)="selectCity(city)">{{ city }}</button>
-      </div>
+  <h5 class="modal-title">Book Tickets for {{ movie.name }}</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div *ngIf="!selectedCity && !selectedShow">
+    <h6>Select a city:</h6>
+    <div *ngFor="let city of cities" class="mb-2">
+      <button class="btn btn-primary" (click)="selectCity(city)">{{ city }}</button>
     </div>
-    <div *ngIf="selectedCity">
-      <h6>Theatres in {{ selectedCity }}:</h6>
-      <div *ngFor="let theatre of theatres" class="mb-4">
-        <h5>{{ theatre.name }}</h5>
+  </div>
+  <div *ngIf="selectedCity && !selectedShow">
+    <h6>Theatres in {{ selectedCity }}:</h6>
+    <div *ngFor="let theatre of theatres" class="mb-4">
+      <h5>{{ theatre.name }}</h5>
+      <div *ngIf="theatre.shows && theatre.shows.length">
+        <h6>Showtimes:</h6>
         <div *ngFor="let show of theatre.shows">
           <button class="btn btn-outline-primary" (click)="selectShow(show)">{{ show.time }}</button>
         </div>
       </div>
+      <div *ngIf="!theatre.shows || !theatre.shows.length">
+        <p>No shows available.</p>
+      </div>
     </div>
   </div>
+  <div *ngIf="selectedShow">
+    <h6>Select number of seats for {{ selectedShow.time }}:</h6>
+    <div class="d-flex align-items-center">
+      <button class="btn btn-secondary me-2" (click)="decreaseSeats()">-</button>
+      <span>{{ selectedSeats }}</span>
+      <button class="btn btn-secondary ms-2" (click)="increaseSeats()">+</button>
+    </div>
+    <button class="btn btn-primary mt-3" (click)="confirmBooking()">Confirm Booking</button>
+  </div>
+</div>
+
