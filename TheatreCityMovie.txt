@@ -14,3 +14,19 @@ ON S.TheatreId = T.Id
 WHERE T.City = 'Bangalore' AND S.MovieId = 4
 
 Here it will recieve @City, @MovieId and return the result in <List<Theatre> format where Theatre is a model.
+
+----------------------------
+
+public async Task<List<Theatre>> GetTheatre(string City, int MovieId)
+{
+    var queryCity = (City == "-1") ? null : City;
+    var sqlQuery = @"
+        SELECT DISTINCT T.Id, T.Name
+        FROM Theatre AS T
+        INNER JOIN Show AS S
+        ON S.TheatreId = T.Id
+        WHERE (@City IS NULL OR T.City = @City) 
+        AND (@MovieId IS NULL OR S.MovieId = @MovieId)";
+        
+    return _db.Query<Theatre>(sqlQuery, new { @City = queryCity, @MovieId = MovieId }).ToList();
+}
