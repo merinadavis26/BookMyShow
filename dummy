@@ -1,83 +1,86 @@
-<div class="container mt-4">
-    <div class="card">
-      <div class="card-header">
-        <h3>Movies Management</h3>
-      </div>
-      <div class="card-body">
-        <button class="btn btn-primary mb-3" [routerLink]="['/admin/add-movie']">Add New Movie</button>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let movie of movies">
-              <td>{{ movie.name }}</td>
-              <td>
-                <button class="btn btn-warning mr-2" (click)="openModal(content,movie)">Edit</button>
-                <button class="btn btn-danger" (click)="deleteMovie(movie)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <div class="position-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" routerLink="/user">
+                Home
+              </a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/movies">
+                Manage Movies
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/theatres">
+                Manage Theatres
+              </a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/shows">
+                My Bookings
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
   
-    <!-- Modal for Add/Edit Movie -->
-    <ng-template #content let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title">{{ isEdit ? 'Edit Movie' : 'Add New Movie' }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form #movieForm="ngForm" (ngSubmit)="onSubmit(movieForm)">
-          <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="selectedMovie.name" required>
-          </div>
-          <div class="mb-3">
-            <label for="imdbRating" class="form-label">IMDb Rating</label>
-            <select class="form-select" id="imdbRating" name="imdbRating" [(ngModel)]="selectedMovie.imdbRating" required>
-              <option value="1">1 Star</option>
-              <option value="2">2 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="5">5 Stars</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
-            <select class="form-select" id="category" name="category" [(ngModel)]="selectedMovie.category" required>
-              <option *ngFor="let category of categories" [value]="category.name">{{ category.name }}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="genre" class="form-label">Genre</label>
-            <select class="form-select" id="genre" name="genre" [(ngModel)]="selectedMovie.genre" required>
-              <option *ngFor="let genre of genres" [value]="genre.name">{{ genre.name }}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="releaseDate" class="form-label">Release Date</label>
-            <input type="date" class="form-control" id="releaseDate" name="releaseDate" [(ngModel)]="selectedMovie.releaseDate" required>
-          </div>
-          <div class="mb-3">
-            <label for="duration" class="form-label">Duration (minutes)</label>
-            <input type="number" class="form-control" id="duration" name="duration" [(ngModel)]="selectedMovie.duration" required>
-          </div>
-          <div class="mb-3">
-            <label for="themePhoto" class="form-label">Theme Photo</label>
-            <input type="file" class="form-control" id="themePhotoPath" name="themePhotoPath" (change)="onFileChange($event)" [(ngModel)]="selectedMovie.themePhotoPath" accept="image/*" required>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
-            <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save changes' : 'Add Movie' }}</button>
-          </div>
-        </form>
-      </div>
-    </ng-template>
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h1">Latest at the Box Office!</h1>
+        </div>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4" *ngFor="let movie of movies">
+                    <div class="card mb-4 shadow-sm">
+                        <img
+                        [src]="movie.themePhotoPath"
+                        class="card-img-top"
+                        alt="{{movie.name}}"
+                        (click)="navigateToMovieDetails(movie.id)"
+                        style="cursor:pointer;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{movie.name}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
+
+import { Component } from '@angular/core';
+import {MovieService} from '../../services/movie.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-user-dashboard',
+  templateUrl: './user-dashboard.component.html',
+  styleUrl: './user-dashboard.component.css'
+})
+export class UserDashboardComponent {
+  movies: any[]=[];
+
+  constructor(
+    private movieService: MovieService,
+    private router: Router
+  ){}
+
+  ngOnInit(): void{
+    this.loadMovies();
+  }
+
+  loadMovies(): void{
+    this.movieService.getMovies().subscribe(movies=>{
+      this.movies=movies;
+    });
+  }
+
+  navigateToMovieDetails(movieId:number):void{
+    // this.router.navigate(['/movie-details', movieId]);
+    }
+}
