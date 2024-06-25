@@ -1,0 +1,16 @@
+public async Task<List<ShowMovieModel>> GetShowByMovieAndCity(string MovieId, string City)
+{
+    var queryCity = (City == "-1") ? null : City;
+    var sqlQuery = "SELECT distinct s.Time,s.TheatreId,s.MovieId,t.Name FROM ( Show s join Theatre t on s.TheatreId = t.Id ) join Movie m on m.Id = s.MovieId where ( @MovieId is null or m.Id = @MovieId ) and ( @City is null or t.City = @City ) ";
+    return _db.Query<ShowMovieModel>(sqlQuery, new { @MovieId = MovieId, @City = queryCity }).ToList();
+}
+
+Create a function similar to above example which has definition as : public async Task<List<Theatre>> GetTheatre(string City, int movieId)
+and query is 
+SELECT DISTINCT T.Id, T.Name
+FROM Theatre AS T
+INNER JOIN Show as S
+ON S.TheatreId = T.Id
+WHERE T.City = 'Bangalore' AND S.MovieId = 4
+
+Here it will recieve @City, @MovieId and return the result in <List<Theatre> format where Theatre is a model.
