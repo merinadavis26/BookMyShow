@@ -1,832 +1,108 @@
-movie-list component
-<div class="container">
-  <div class="row">
-    <div class="col-md-4" *ngFor="let movie of movies">
-      <div class="card">
-        <img src="assets/dummy-movie.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">{{ movie.name }}</h5>
-          <p class="card-text">IMDb Rating: {{ movie.imdbRating }}</p>
-          <a [routerLink]="['/user-dashboard/movies', movie.id]" class="btn btn-primary">Book Now</a>
+city-modal.component.ts:40 
+ ERROR 
+TypeError: Cannot read properties of undefined (reading 'id')
+    at _CityModalComponent.loadShows (city-modal.component.ts:63:59)
+    at city-modal.component.ts:43:14
+    at Array.forEach (<anonymous>)
+    at Object.next (city-modal.component.ts:42:21)
+    at ConsumerObserver2.next (Subscriber.js:96:33)
+    at Subscriber2._next (Subscriber.js:63:26)
+    at Subscriber2.next (Subscriber.js:34:18)
+    at map.js:7:24
+    at OperatorSubscriber2._this._next (OperatorSubscriber.js:15:21)
+    at Subscriber2.next (Subscriber.js:34:18)
+
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TheatreService } from '../../services/theatre.service';
+import { ShowService } from 'src/app/services/show.service';
+
+@Component({
+  selector: 'app-city-modal',
+  templateUrl: './city-modal.component.html',
+  styleUrls: ['./city-modal.component.css']
+})
+export class CityModalComponent implements OnInit {
+  @Input() movie: any;
+  cities: string[] = [];
+  theatres: any[]=[];
+  selectedCity: string | null=null ;
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private theatreService: TheatreService,
+    private showService: ShowService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCities();
+  }
+
+  loadCities(): void {
+    this.theatreService.getCities().subscribe((cities: string[]) => {
+      this.cities = cities;
+    });
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
+  selectCity(city: string): void {
+    this.selectedCity=city;   
+    // this.loadTheatres(city);
+    this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+      this.theatres =theatres;
+      this.theatres.forEach(theatre =>{
+        this.loadShows(theatre);
+        // this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
+        //   console.log('shows for theatre ID: ${theatre.id}:',shows);
+        //   theatre.shows = shows;
+        // });
+      });
+    });
+  }
+
+  // loadTheatres(city:string): void{
+  //   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+  //     this.theatres =theatres;
+  //     this.theatres.forEach(theatre =>{
+  //       this.loadShows(theatre);
+  //     });
+  //   });
+  // }
+
+  loadShows(theatre:any):void{
+    console.log('fetching shows for theatre ID: ${theatre.id} and movie ID: ${this.movie.id');
+    this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
+      console.log('shows for theatre ID: ${theatre.id}:',shows);
+      theatre.shows = shows;
+    });
+  }
+
+  selectShow(show: any):void{
+    this.activeModal.close({city: this.selectCity, show});
+  }
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">Choose City</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="!selectedCity">
+      <h6>Select a city:</h6>
+      <div *ngFor="let city of cities" class="mb-2">
+        <button class="btn btn-primary" (click)="selectCity(city)">{{ city }}</button>
+      </div>
+    </div>
+    <div *ngIf="selectedCity">
+      <h6>Theatres in {{ selectedCity }}:</h6>
+      <div *ngFor="let theatre of theatres" class="mb-4">
+        <h5>{{ theatre.name }}</h5>
+        <div *ngFor="let show of theatre.shows">
+          <button class="btn btn-outline-primary" (click)="selectShow(show)">{{ show.time }}</button>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-import { Component, OnInit } from '@angular/core';
-import { MovieService } from '../../services/movie.service';
-
-@Component({
-  selector: 'app-movie-list',
-  templateUrl: './movie-list.component.html',
-  styleUrls: ['./movie-list.component.css']
-})
-export class MovieListComponent implements OnInit {
-  movies: any[];
-
-  constructor(private movieService: MovieService) { }
-
-  ngOnInit(): void {
-    this.loadMovies();
-  }
-
-  loadMovies(): void {
-    this.movieService.getAllMovies().subscribe(data => {
-      this.movies = data;
-    });
-  }
-}
-
-movie-detail component
-<div class="container">
-  <h2>Select Location</h2>
-  <select class="form-select" [(ngModel)]="selectedLocation" (change)="loadTheatres()">
-    <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
-  </select>
-
-  <div *ngIf="theatres.length > 0">
-    <h2>Select Theatre</h2>
-    <select class="form-select" [(ngModel)]="selectedTheatre" (change)="loadShows()">
-      <option *ngFor="let theatre of theatres" [value]="theatre.id">{{ theatre.name }}</option>
-    </select>
-  </div>
-
-  <div *ngIf="shows.length > 0">
-    <h2>Select Show</h2>
-    <select class="form-select" [(ngModel)]="selectedShow">
-      <option *ngFor="let show of shows" [value]="show.id">{{ show.showtime | date: 'short' }}</option>
-    </select>
-  </div>
-
-  <button class="btn btn-primary" [routerLink]="['/user-dashboard/booking', selectedShow]">Next</button>
-</div>
-
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { LocationService } from '../../services/location.service';
-import { TheatreService } from '../../services/theatre.service';
-import { ShowService } from '../../services/show.service';
-
-@Component({
-  selector: 'app-movie-detail',
-  templateUrl: './movie-detail.component.html',
-  styleUrls: ['./movie-detail.component.css']
-})
-export class MovieDetailComponent implements OnInit {
-  movieId: number;
-  locations: any[];
-  theatres: any[] = [];
-  shows: any[] = [];
-  selectedLocation: number;
-  selectedTheatre: number;
-  selectedShow: number;
-
-  constructor(
-    private route: ActivatedRoute,
-    private locationService: LocationService,
-    private theatreService: TheatreService,
-    private showService: ShowService
-  ) { }
-
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.movieId = +params['id'];
-      this.loadLocations();
-    });
-  }
-
-  loadLocations(): void {
-    this.locationService.getAllLocations().subscribe(data => {
-      this.locations = data;
-    });
-  }
-
-  loadTheatres(): void {
-    this.theatreService.getTheatresByLocation(this.selectedLocation).subscribe(data => {
-      this.theatres = data;
-    });
-  }
-
-  loadShows(): void {
-    this.showService.getShowsByMovieAndTheatre(this.movieId, this.selectedTheatre).subscribe(data => {
-      this.shows = data;
-    });
-  }
-}
-
-location serice
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class LocationService {
-
-  private apiUrl = 'https://api.example.com/locations'; // Replace with your API endpoint
-
-  constructor(private http: HttpClient) { }
-
-  getAllLocations(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
-  }
-}
-
-theatre service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class TheatreService {
-
-  private apiUrl = 'https://api.example.com/theatres'; // Replace with your API endpoint
-
-  constructor(private http: HttpClient) { }
-
-  getTheatresByLocation(locationId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/byLocation/${locationId}`);
-  }
-}
-
-show service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class ShowService {
-
-  private apiUrl = 'https://api.example.com/shows'; // Replace with your API endpoint
-
-  constructor(private http: HttpClient) { }
-
-  getShowsByMovieAndTheatre(movieId: number, theatreId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/byMovieAndTheatre/${movieId}/${theatreId}`);
-  }
-}
-
-booking component
-<div class="container">
-  <h2>Select Seats</h2>
-  <div class="mb-3">
-    <label for="seats" class="form-label">Number of Seats</label>
-    <input type="number" class="form-control" id="seats" [(ngModel)]="numberOfSeats" required>
-  </div>
-  <button class="btn btn-primary" [routerLink]="['/user-dashboard/checkout', showId, numberOfSeats]">Checkout</button>
-</div>
-
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-@Component({
-  selector: 'app-booking',
-  templateUrl: './booking.component.html',
-  styleUrls: ['./booking.component.css']
-})
-export class BookingComponent implements OnInit {
-  showId: number;
-  numberOfSeats: number;
-
-  constructor(private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.showId = +params['id'];
-    });
-  }
-}
-
-checkout component
-<div class="container">
-  <h2>Checkout</h2>
-  <p>Show ID: {{ showId }}</p>
-  <p>Number of Seats: {{ numberOfSeats }}</p>
-  <button class="btn btn-primary" (click)="confirmBooking()">Confirm Booking</button>
-</div>
-
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BookingService } from '../../services/booking.service';
-
-@Component({
-  selector: 'app-checkout',
-  templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
-})
-export class CheckoutComponent implements OnInit {
-  showId: number;
-  numberOfSeats: number;
-
-  constructor(
-    private route: ActivatedRoute,
-    private bookingService: BookingService,
-    private router: Router
-  ) { }
-
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.showId = +params['id'];
-      this.numberOfSeats = +params['seats'];
-    });
-  }
-
-  confirmBooking(): void {
-    const booking = {
-      userId: 1, // Assuming user ID is 1 for simplicity
-      showId: this.showId,
-      seats: this.numberOfSeats,
-      totalPrice: this.numberOfSeats * 10 // Replace with actual pricing logic
-    };
-
-    this.bookingService.createBooking(booking).subscribe(() => {
-      this.router.navigate(['/user-dashboard/history']);
-    });
-  }
-}
-
-booking service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class BookingService {
-
-  private apiUrl = 'https://api.example.com/bookings'; // Replace with your API endpoint
-
-  constructor(private http: HttpClient) { }
-
-  createBooking(booking: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, booking);
-  }
-}
-
-X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:4:48:
-      4 │       <form (ngSubmit)="onSubmit()" #movieForm="ngForm">
-        ╵                                                 ~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:7:72:
-      7 │ ...m-control" id="name" name="name" [(ngModel)]="movie.name" required>
-        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:11:72:
-      11 │ ...Rating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
-         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:21:68:
-      21 │ ...category" name="category" [(ngModel)]="movie.categoryId" required>
-         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:27:62:
-      27 │ ...ect" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
-         ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:33:86:
-      33 │ ...Date" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
-         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/add-movie/add-movie.component.html:37:82:
-      37 │ ...="duration" name="duration" [(ngModel)]="movie.duration" required>
-         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AddMovieComponent.
-
-    src/app/admin/add-movie/add-movie.component.ts:10:15:
-      10 │   templateUrl: './add-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8001: 'router-outlet' is not a known element:
-1. If 'router-outlet' is an Angular component, then verify that it is part of this module.
-2. If 'router-outlet' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. [plugin angular-compiler]
-
-    src/app/admin/admin-dashboard/admin-dashboard.component.html:34:8:
-      34 │         <router-outlet></router-outlet>
-         ╵         ~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AdminDashboardComponent.
-
-    src/app/admin/admin-dashboard/admin-dashboard.component.ts:5:15:
-      5 │   templateUrl: './admin-dashboard.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:4:47:
-      4 │       <form (ngSubmit)="onSubmit()" #editForm="ngForm">
-        ╵                                                ~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:7:72:
-      7 │ ...m-control" id="name" name="name" [(ngModel)]="movie.name" required>
-        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:11:72:
-      11 │ ...Rating" name="imdbRating" [(ngModel)]="movie.imdbRating" required>
-         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:21:68:
-      21 │ ...category" name="category" [(ngModel)]="movie.categoryId" required>
-         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:27:62:
-      27 │ ...ect" id="genre" name="genre" [(ngModel)]="movie.genreId" required>
-         ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:33:86:
-      33 │ ...Date" name="releaseDate" [(ngModel)]="movie.releaseDate" required>
-         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/admin/edit-movie/edit-movie.component.html:37:82:
-      37 │ ...="duration" name="duration" [(ngModel)]="movie.duration" required>
-         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component EditMovieComponent.
-
-    src/app/admin/edit-movie/edit-movie.component.ts:10:15:
-      10 │   templateUrl: './edit-movie.component.html',
-         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'routerLink' since it isn't a known property of 'button'. [plugin angular-compiler]       
-
-    src/app/admin/movies-management/movies-management.component.html:7:45:
-      7 │ ...imary mb-3" [routerLink]="['/admin/add-movies/add']">Add New Mov...
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component MoviesManagementComponent.
-
-    src/app/admin/movies-management/movies-management.component.ts:8:15:
-      8 │   templateUrl: './movies-management.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
-
-    src/app/admin/movies-management/movies-management.component.html:37:26:
-      37 │         <form #movieForm="ngForm" (ngSubmit)="onSubmit(movieForm)">
-         ╵                           ~~~~~~
-
-  Error occurs in the template of component MoviesManagementComponent.
-
-    src/app/admin/movies-management/movies-management.component.ts:8:15:
-      8 │   templateUrl: './movies-management.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8001: 'router-outlet' is not a known element:
-1. If 'router-outlet' is an Angular component, then verify that it is part of this module.
-2. If 'router-outlet' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. [plugin angular-compiler]
-
-    src/app/app.component.html:2:0:
-      2 │ <router-outlet />
-        ╵ ~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component AppComponent.
-
-    src/app/app.component.ts:5:15:
-      5 │   templateUrl: './app.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] Could not resolve "./edit-movie/edit-movie.component"
-
-    src/app/app.module.ts:26:35:
-      26 │ ...t { EditMovieComponent } from './edit-movie/edit-movie.component';
-         ╵                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] TS2307: Cannot find module './edit-movie/edit-movie.component' or its corresponding type declarations. [plugin angular-compiler]
-
-    src/app/app.module.ts:26:35:
-      26 │ ...t { EditMovieComponent } from './edit-movie/edit-movie.component';
-         ╵                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] TS-991010: Value at position 16 in the NgModule.declarations of AppModule is not a reference
-  Value could not be determined statically. [plugin angular-compiler]
-
-    src/app/app.module.ts:30:16:
-      30 │   declarations: [
-         ╵                 ^
-
-  Unknown reference.
-
-    src/app/app.module.ts:47:4:
-      47 │     EditMovieComponent,
-         ╵     ~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
-
-    src/app/auth/login/login.component.html:9:63:
-      9 │ ...        <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-        ╵                                                               ~~~~~~
-
-  Error occurs in the template of component LoginComponent.
-
-    src/app/auth/login/login.component.ts:8:15:
-      8 │   templateUrl: './login.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/auth/login/login.component.html:12:75:
-      12 │ ...="form-control mb-2" [(ngModel)]="username" name="username" pla...
-         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component LoginComponent.
-
-    src/app/auth/login/login.component.ts:8:15:
-      8 │   templateUrl: './login.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/auth/login/login.component.html:16:79:
-      16 │ ...="form-control mb-2" [(ngModel)]="password" name="password" pla...
-         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component LoginComponent.
-
-    src/app/auth/login/login.component.ts:8:15:
-      8 │   templateUrl: './login.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8003: No directive found with exportAs 'ngForm'. [plugin angular-compiler]
-
-    src/app/auth/register/register.component.html:3:59:
-      3 │   <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
-        ╵                                                            ~~~~~~
-
-  Error occurs in the template of component RegisterComponent.
-
-    src/app/auth/register/register.component.ts:8:15:
-      8 │   templateUrl: './register.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/auth/register/register.component.html:6:60:
-      6 │ ...class="form-control" [(ngModel)]="username" name="username" requ...
-        ╵                         ~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component RegisterComponent.
-
-    src/app/auth/register/register.component.ts:8:15:
-      8 │   templateUrl: './register.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'. [plugin angular-compiler]
-
-    src/app/auth/register/register.component.html:10:64:
-      10 │ ...class="form-control" [(ngModel)]="password" name="password" req...
-         ╵                         ~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component RegisterComponent.
-
-    src/app/auth/register/register.component.ts:8:15:
-      8 │   templateUrl: './register.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'ngModel' since it isn't a known property of 'select'. [plugin angular-compiler]
-
-    src/app/auth/register/register.component.html:14:44:
-      14 │ ...role" class="form-select" [(ngModel)]="role" name="role" required>
-         ╵                              ~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component RegisterComponent.
-
-    src/app/auth/register/register.component.ts:8:15:
-      8 │   templateUrl: './register.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] NG8002: Can't bind to 'routerLink' since it isn't a known property of 'a'. [plugin angular-compiler]
-
-    src/app/user/movie-list/movie-list.component.html:4:7:
-      4 │     <a [routerLink]="['/user/movies',movie.id]">Details</a>
-        ╵        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Error occurs in the template of component MovieListComponent.
-
-    src/app/user/movie-list/movie-list.component.ts:6:15:
-      6 │   templateUrl: './movie-list.component.html',
-        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-onSubmit() {
-    if (this.selectedFile) {
-      const formData = new FormData();
-      formData.append('file', this.selectedFile);
-
-      this.movieService.uploadPhoto(formData).subscribe((response: any) => {
-        this.movie.themePhotoPath = response.path;
-        this.saveMovie();
-      });
-    } else {
-      this.saveMovie();
-    }
-  }
-
-onFileChange(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
-
-saveMovie() {
-    this.movieService.addMovie(this.movie).subscribe(() => {
-      this.router.navigate(['/admin/movies-management']);
-    });
-  }
-
-
-[ApiController]
-[Route("api/[controller]")]
-public class MoviesController : ControllerBase
-{
-    private readonly string _uploadFolderPath = "uploads"; // Path to store uploaded files
-
-    [HttpPost("upload-image")]
-    public async Task<IActionResult> UploadImage()
-    {
-        try
-        {
-            var file = Request.Form.Files[0];
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), _uploadFolderPath);
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Ok(new { FilePath = Path.Combine(_uploadFolderPath, uniqueFileName) });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-}
-
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { MovieService } from '../services/movie.service';
-import { CategoryService } from '../services/category.service';
-import { GenreService } from '../services/genre.service';
-
-@Component({
-  selector: 'app-add-movie',
-  templateUrl: './add-movie.component.html',
-  styleUrls: ['./add-movie.component.css']
-})
-export class AddMovieComponent implements OnInit {
-  movie: any = {
-    name: '',
-    imdbRating: '',
-    categoryId: '',
-    genreId: '',
-    releaseDate: '',
-    duration: '',
-    themePhotoPath: ''
-  };
-  categories: any[] = [];
-  genres: any[] = [];
-  selectedFile: File | null = null;
-
-  constructor(
-    private movieService: MovieService,
-    private categoryService: CategoryService,
-    private genreService: GenreService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.loadCategories();
-    this.loadGenres();
-  }
-
-  loadCategories() {
-    this.categoryService.getCategories().subscribe((data: any) => {
-      this.categories = data;
-    });
-  }
-
-  loadGenres() {
-    this.genreService.getGenres().subscribe((data: any) => {
-      this.genres = data;
-    });
-  }
-
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-    }
-  }
-
-  onSubmit() {
-    if (this.selectedFile) {
-      this.uploadImageAndSaveMovie();
-    } else {
-      this.saveMovie();
-    }
-  }
-
-  uploadImageAndSaveMovie() {
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-
-    this.movieService.uploadImage(formData).subscribe((response: any) => {
-      this.movie.themePhotoPath = response.filePath;
-      this.saveMovie();
-    });
-  }
-
-  saveMovie() {
-    this.movieService.addMovie(this.movie).subscribe(() => {
-      this.router.navigate(['/admin/movies-management']);
-    });
-  }
-}
-
-
-public Movie Add(Movie movie)
-{
-    using (var connection = _dapperContext.CreateConnection())
-    {
-
-        var sqlQuery = "INSERT INTO Movie (Name,ImdbRating,Category,Genre,ReleaseDate,Duration,ThemePhotoPath) VALUES (@Name,@ImdbRating,@Category,@Genre,@ReleaseDate,@Duration,@ThemePhotoPath)";
-        connection.Query<Movie>(sqlQuery);
-        return movie;
-    }
-   
-    
-}
-
-System.Data.SqlClient.SqlException
-  HResult=0x80131904
-  Message=Must declare the scalar variable "@Name".
-  Source=Core .Net SqlClient Data Provider
-  StackTrace:
-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
-   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
-   at System.Data.SqlClient.SqlDataReader.get_MetaData()
-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite, String method)
-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
-   at System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
-   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior)
-   at Dapper.SqlMapper.<QueryImpl>d__147`1.MoveNext()
-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
-   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType)
-   at Book_My_Show_DAL.Implementations.MovieServices.Add(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show_DAL\Implementations\MovieServices.cs:line 29
-   at Book_My_Show_BL.Implementations.MovieServicesBL.Add(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show_BL\Implementations\MovieServicesBL.cs:line 20
-   at Book_My_Show.Controllers.MovieController.Post(Movie movie) in C:\src\Angular project\Online_Movie_App\Book_My_Show\Controllers\MovieController.cs:line 36
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
-
