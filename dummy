@@ -1,86 +1,40 @@
-<div class="container-fluid">
-    <div class="row">
-      <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-        <div class="position-sticky">
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" routerLink="/user">
-                Home
-              </a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/movies">
-                Manage Movies
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/theatres">
-                Manage Theatres
-              </a>
-            </li> -->
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/shows">
-                My Bookings
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-  
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h1">Latest at the Box Office!</h1>
-        </div>
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-4" *ngFor="let movie of movies">
-                    <div class="card mb-4 shadow-sm">
-                        <img
-                        [src]="movie.themePhotoPath"
-                        class="card-img-top"
-                        alt="{{movie.name}}"
-                        (click)="navigateToMovieDetails(movie.id)"
-                        style="cursor:pointer;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{movie.name}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <router-outlet></router-outlet>
-      </main>
-    </div>
-  </div>
+<div class="modal-header">
+  <h4 class="modal-title">{{ movie?.name }}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p><strong>IMDb Rating:</strong> {{ movie?.imdbRating }}</p>
+  <p><strong>Duration:</strong> {{ movie?.duration }}</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="bookTickets()">Book Tickets</button>
+</div>
 
-import { Component } from '@angular/core';
-import {MovieService} from '../../services/movie.service';
+import { Component, Input } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-dashboard',
-  templateUrl: './user-dashboard.component.html',
-  styleUrl: './user-dashboard.component.css'
+  selector: 'app-movie-detail-modal',
+  templateUrl: './movie-detail-modal.component.html',
+  styleUrls: ['./movie-detail-modal.component.css']
 })
-export class UserDashboardComponent {
-  movies: any[]=[];
+export class MovieDetailModalComponent {
+  @Input() movie: any;
 
   constructor(
-    private movieService: MovieService,
+    public activeModal: NgbActiveModal,
     private router: Router
-  ){}
+  ) {}
 
-  ngOnInit(): void{
-    this.loadMovies();
+  dismiss(): void {
+    this.activeModal.dismiss();
   }
 
-  loadMovies(): void{
-    this.movieService.getMovies().subscribe(movies=>{
-      this.movies=movies;
-    });
+  bookTickets(): void {
+    this.activeModal.close();
+    this.router.navigate(['/movie-details', this.movie.id]);
   }
-
-  navigateToMovieDetails(movieId:number):void{
-    // this.router.navigate(['/movie-details', movieId]);
-    }
 }
