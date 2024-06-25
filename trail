@@ -24,14 +24,22 @@
       </div>
     </div>
   </div>
-  <div *ngIf="selectedShow">
+  <div *ngIf="selectedShow && !showBookingDetails">
     <h6>Select number of seats for {{ selectedShow.time }}:</h6>
     <div class="d-flex align-items-center">
       <button class="btn btn-secondary me-2" (click)="decreaseSeats()">-</button>
       <span>{{ selectedSeats }}</span>
       <button class="btn btn-secondary ms-2" (click)="increaseSeats()">+</button>
     </div>
+    <button class="btn btn-primary mt-3" (click)="showBookingDetails = true">Next</button>
+  </div>
+  <div *ngIf="showBookingDetails">
+    <h6>Booking Details:</h6>
+    <p><strong>Movie:</strong> {{ movie.name }}</p>
+    <p><strong>City:</strong> {{ selectedCity }}</p>
+    <p><strong>Theatre:</strong> {{ selectedShow.theatreName }}</p>
+    <p><strong>Show Time:</strong> {{ selectedShow.time }}</p>
+    <p><strong>Seats:</strong> {{ selectedSeats }}</p>
     <button class="btn btn-primary mt-3" (click)="confirmBooking()">Confirm Booking</button>
   </div>
 </div>
-
