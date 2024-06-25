@@ -1,1 +1,52 @@
-inception.jpg:1 Failed to load resource: the server responded with a status of 404 (Not Found)
+<div class="modal-header">
+  <h4 class="modal-title">Choose City</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div *ngIf="cities.length > 0; else noCities">
+    <button *ngFor="let city of cities" class="btn btn-outline-primary m-2" (click)="selectCity(city)">
+      {{ city }}
+    </button>
+  </div>
+  <ng-template #noCities>
+    <p>No cities available.</p>
+  </ng-template>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TheatreService } from '../../services/theatre.service';
+
+@Component({
+  selector: 'app-city-modal',
+  templateUrl: './city-modal.component.html',
+  styleUrls: ['./city-modal.component.css']
+})
+export class CityModalComponent implements OnInit {
+  cities: string[] = [];
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private theatreService: TheatreService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCities();
+  }
+
+  loadCities(): void {
+    this.theatreService.getCities().subscribe((cities: string[]) => {
+      this.cities = cities;
+    });
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
+  selectCity(city: string): void {
+    this.activeModal.close(city);
+  }
+}
