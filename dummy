@@ -1,21 +1,26 @@
-User
-inception.jpg:1 
-        
-        
-        Failed to load resource: the server responded with a status of 404 (Not Found)
-darkknight.jpg:1 
-        
-        
-        Failed to load resource: the server responded with a status of 404 (Not Found)
-city-modal.component.ts:52 fetching shows for theatre ID: ${theatre.id} and movie ID: ${this.movie.id
-core.mjs:6672  ERROR TypeError: Cannot read properties of undefined (reading 'id')
-    at _CityModalComponent.loadShows (city-modal.component.ts:53:59)
-    at city-modal.component.ts:46:14
-    at Array.forEach (<anonymous>)
-    at Object.next (city-modal.component.ts:45:21)
-    at ConsumerObserver2.next (Subscriber.js:96:33)
-    at Subscriber2._next (Subscriber.js:63:26)
-    at Subscriber2.next (Subscriber.js:34:18)
-    at map.js:7:24
-    at OperatorSubscriber2._this._next (OperatorSubscriber.js:15:21)
-    at Subscriber2.next (Subscriber.js:34:18)
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+export interface BookSeat {
+  row: string;
+  number: number;
+  availability: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SeatService {
+
+  private apiUrl = `${environment.apiUrl}/seats`;
+
+  constructor(private http: HttpClient) { }
+
+  getBookedSeats(showTime: string, theatreId: number, movieId: number): Observable<BookSeat[]> {
+    const params = { showTime, theatreId: theatreId.toString(), movieId: movieId.toString() };
+    return this.http.get<BookSeat[]>(`${this.apiUrl}/availability`, { params });
+  }
+}
+
