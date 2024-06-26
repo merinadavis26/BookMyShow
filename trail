@@ -1,19 +1,37 @@
-X [ERROR] TS2564: Property 'city' has no initializer and is not definitely assigned in the constructor. [plugin angular-compiler]
+INSERT INTO Seats (id, theatre_id, row, number)
+VALUES 
+(1, 1, 'A', 1),
+(2, 1, 'A', 2),
+(3, 1, 'A', 3),
+(4, 1, 'A', 4),
+(5, 1, 'B', 1),
+(6, 1, 'B', 2),
+(7, 1, 'B', 3),
+(8, 1, 'B', 4),
+(9, 1, 'C', 1),
+(10, 1, 'C', 2),
+(11, 1, 'C', 3),
+(12, 1, 'C', 4);
 
-    src/app/user/booking-details-modal/booking-details-modal.component.ts:11:11:
-      11 │   @Input() city: string;
-         ╵            ~~~~
+CREATE TABLE Seats (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  theatre_id INT,
+  row VARCHAR(5),
+  number INT,
+  FOREIGN KEY (theatre_id) REFERENCES Theatres(id)
+);
 
+INSERT INTO Bookings (id, show_id, seat_id, user_id, status)
+VALUES 
+(1, 1, 2, 1, 'booked'),
+(2, 1, 3, 1, 'booked');
 
-X [ERROR] TS2564: Property 'seats' has no initializer and is not definitely assigned in the constructor. [plugin angular-compiler]
-
-    src/app/user/booking-details-modal/booking-details-modal.component.ts:14:11:
-      14 │   @Input() seats: number;
-         ╵            ~~~~~
-
-
-X [ERROR] TS2564: Property 'totalPrice' has no initializer and is not definitely assigned in the constructor. [plugin angular-compiler]
-
-    src/app/user/booking-details-modal/booking-details-modal.component.ts:16:2:
-      16 │   totalPrice: number;
-         ╵   ~~~~~~~~~~
+CREATE TABLE Bookings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  show_id INT,
+  seat_id INT,
+  user_id INT,
+  status VARCHAR(50),
+  FOREIGN KEY (show_id) REFERENCES Shows(id),
+  FOREIGN KEY (seat_id) REFERENCES Seats(id)
+);
