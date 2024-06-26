@@ -74,3 +74,27 @@ export class SeatService {
 .seat-button.available {
   background-color: green;
 }
+
+import { Pipe, PipeTransform } from '@angular/core';
+import { BookSeat } from '../services/seat.service';
+
+@Pipe({
+  name: 'groupByRow'
+})
+export class GroupByRowPipe implements PipeTransform {
+
+  transform(seats: BookSeat[]): any {
+    if (!seats) return [];
+    
+    const groupedSeats = seats.reduce((acc, seat) => {
+      acc[seat.row] = acc[seat.row] || [];
+      acc[seat.row].push(seat);
+      return acc;
+    }, {});
+
+    return Object.keys(groupedSeats).map(key => ({
+      row: key,
+      seats: groupedSeats[key]
+    }));
+  }
+}
