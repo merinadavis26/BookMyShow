@@ -111,3 +111,31 @@ export class GroupByRowPipe implements PipeTransform {
     </button>
   </div>
 </div>
+
+X [ERROR] TS2693: 'BookSeat' only refers to a type, but is being used as a value here. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:13:19:
+      13 │   availableSeats = BookSeat[]=[];
+         ╵                    ~~~~~~~~
+
+
+X [ERROR] TS1011: An element access expression should take an argument. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:13:28:
+      13 │   availableSeats = BookSeat[]=[];
+         ╵                             ^
+
+
+X [ERROR] TS2322: Type 'any[]' is not assignable to type 'never[]'.
+  Type 'any' is not assignable to type 'never'. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:31:6:
+      31 │       this.availableSeats=seats;
+         ╵       ~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Unexpected "]"
+
+    src/app/user/seats-modal/seats-modal.component.ts:41:39:
+      41 │         this.availableSeats = BookSeat[] = [];
+         ╵                                        ^
