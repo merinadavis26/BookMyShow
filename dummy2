@@ -1,0 +1,144 @@
+seat.service.ts
+  import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface BookSeat {
+  row: string;
+  number: number;
+  availability: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SeatService {
+  apiUrl="https://localhost:44353/api/Seat"
+
+  constructor(private http: HttpClient) { }
+
+  getBookedSeats(showTime: string, theatreId: number, movieId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/showTime/${showTime}/movie/${movieId}/theatre/${theatreId}`);
+    // https://localhost:44353/api/Seat/showTime/18%3A00/movie/1/theatre/1
+  }}
+
+
+FilterByRowPipe.ts
+import { Pipe, PipeTransform } from '@angular/core';
+import { BookSeat } from './services/seat.service';
+
+@Pipe({
+  name: 'filterByRow'
+})
+export class FilterByRowPipe implements PipeTransform {
+  
+
+  transform(seats: BookSeat[],row:string): BookSeat[] {
+    return seats.filter(seat => seat.row=== row);
+  }
+
+}
+
+seat-modal.component.ts
+  import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { SeatService, BookSeat } from 'src/app/services/seat.service';
+import { FilterByRowPipe } from 'src/app/filter-by-row.pipe';
+
+@Component({
+  selector: 'app-seats-modal',
+  templateUrl: './seats-modal.component.html',
+  styleUrls: ['./seats-modal.component.css']
+})
+export class SeatsModalComponent implements OnInit {
+  @Input() show: any;
+  availableSeats = BookSeat[]=[];
+  selectedSeats: number[] = [];
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private seatService: SeatService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadSeats();
+  }
+
+  loadSeats(): void{
+    const showTime=this.show.showTime;
+    const theatreId=this.show.theatreId;
+    const movieId=this.show.movieId;
+
+    this.seatService.getBookedSeats(showTime,theatreId,movieId).subscribe(seats=>{
+      this.availableSeats=seats;
+    },
+    error=>{
+      console.error('Error loading seats: ', error);
+    }
+  );
+  }
+
+  toggleSeat(seatNumber: number): void {
+    const index = this.selectedSeats.indexOf(seatNumber);
+    if (index > -1) {
+      this.selectedSeats.splice(index, 1);
+    } else {
+      this.selectedSeats.push(seatNumber);
+    }
+  }
+
+  confirm(): void {
+    this.activeModal.close(this.selectedSeats);
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+}
+
+seat-modal.component.html
+  <div *ngFor="let row of ['A', 'B', 'C', 'D']" class="seat-row">
+  <span class="row-label">{{ row }}</span>
+  <div *ngFor="let seat of availableSeats | filterByRow:row" class="seat-container">
+    <button 
+      class="seat-button" 
+      [ngClass]="{ 'booked': seat.availability === 'Booked', 'available': seat.availability === 'Available' }"
+      (click)="toggleSeat(seat.number)"
+      [disabled]="seat.availability === 'Booked'">
+      {{ seat.number }}
+    </button>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
+</div>
+
+      X [ERROR] TS2693: 'BookSeat' only refers to a type, but is being used as a value here. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:13:19:
+      13 │   availableSeats = BookSeat[]=[];
+         ╵                    ~~~~~~~~
+
+
+X [ERROR] TS1011: An element access expression should take an argument. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:13:28:
+      13 │   availableSeats = BookSeat[]=[];
+         ╵                             ^
+
+
+X [ERROR] TS2322: Type 'any[]' is not assignable to type 'never[]'.
+  Type 'any' is not assignable to type 'never'. [plugin angular-compiler]
+
+    src/app/user/seats-modal/seats-modal.component.ts:31:6:
+      31 │       this.availableSeats=seats;
+         ╵       ~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Unexpected "]"
+
+    src/app/user/seats-modal/seats-modal.component.ts:41:39:
+      41 │         this.availableSeats = BookSeat[] = [];
+         ╵                                        ^
