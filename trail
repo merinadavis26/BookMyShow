@@ -38,3 +38,18 @@ CREATE TABLE Bookings (
   FOREIGN KEY (show_id) REFERENCES Shows(id),
   FOREIGN KEY (seat_id) REFERENCES Seats(id)
 );
+
+SELECT TOP (1000) [Number]
+      ,[ShowTime]
+      ,[TheatreId]
+      ,[MovieId]
+      ,[TicketId]
+      ,[Availability]
+      ,[SeatCategoryId]
+      ,[Row]
+  FROM [BookMyShowDB].[dbo].[Seat]
+SELECT TOP (1000) [id]
+      ,[theatre_id]
+      ,[row]
+      ,[number]
+  FROM [BookMyShowDB].[dbo].[SeatTable]
