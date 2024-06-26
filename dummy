@@ -98,3 +98,16 @@ export class GroupByRowPipe implements PipeTransform {
     }));
   }
 }
+
+<div *ngFor="let row of ['A', 'B', 'C', 'D']" class="seat-row">
+  <span class="row-label">{{ row }}</span>
+  <div *ngFor="let seat of availableSeats | filterByRow:row" class="seat-container">
+    <button 
+      class="seat-button" 
+      [ngClass]="{ 'booked': seat.availability === 'Booked', 'available': seat.availability === 'Available' }"
+      (click)="toggleSeat(seat.number)"
+      [disabled]="seat.availability === 'Booked'">
+      {{ seat.number }}
+    </button>
+  </div>
+</div>
