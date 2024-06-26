@@ -1,45 +1,49 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
+@Component({
+  selector: 'app-booking-details-modal',
+  templateUrl: './booking-details-modal.component.html',
+  styleUrls: ['./booking-details-modal.component.css']
+})
+export class BookingDetailsModalComponent implements OnInit {
+  @Input() movie: any;
+  @Input() city: string;
+  @Input() theatre: any;
+  @Input() show: any;
+  @Input() seats: number;
+
+  totalPrice: number;
+
+  constructor(public activeModal: NgbActiveModal) {}
+
+  ngOnInit(): void {
+    this.calculateTotalPrice();
+  }
+
+  calculateTotalPrice(): void {
+    const pricePerSeat = 10; // Example price per seat
+    this.totalPrice = this.seats * pricePerSeat;
+  }
+
+  confirm(): void {
+    this.activeModal.close({ confirmed: true });
+  }
+}
+
 <div class="modal-header">
-  <h5 class="modal-title">Book Tickets for {{ movie.name }}</h5>
-  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+  <h5 class="modal-title">Booking Details</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
-  <div *ngIf="!selectedCity && !selectedShow">
-    <h6>Select a city:</h6>
-    <div *ngFor="let city of cities" class="mb-2">
-      <button class="btn btn-primary" (click)="selectCity(city)">{{ city }}</button>
-    </div>
-  </div>
-  <div *ngIf="selectedCity && !selectedShow">
-    <h6>Theatres in {{ selectedCity }}:</h6>
-    <div *ngFor="let theatre of theatres" class="mb-4">
-      <h5>{{ theatre.name }}</h5>
-      <div *ngIf="theatre.shows && theatre.shows.length">
-        <h6>Showtimes:</h6>
-        <div *ngFor="let show of theatre.shows">
-          <button class="btn btn-outline-primary" (click)="selectShow(show)">{{ show.time }}</button>
-        </div>
-      </div>
-      <div *ngIf="!theatre.shows || !theatre.shows.length">
-        <p>No shows available.</p>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="selectedShow && !showBookingDetails">
-    <h6>Select number of seats for {{ selectedShow.time }}:</h6>
-    <div class="d-flex align-items-center">
-      <button class="btn btn-secondary me-2" (click)="decreaseSeats()">-</button>
-      <span>{{ selectedSeats }}</span>
-      <button class="btn btn-secondary ms-2" (click)="increaseSeats()">+</button>
-    </div>
-    <button class="btn btn-primary mt-3" (click)="showBookingDetails = true">Next</button>
-  </div>
-  <div *ngIf="showBookingDetails">
-    <h6>Booking Details:</h6>
-    <p><strong>Movie:</strong> {{ movie.name }}</p>
-    <p><strong>City:</strong> {{ selectedCity }}</p>
-    <p><strong>Theatre:</strong> {{ selectedShow.theatreName }}</p>
-    <p><strong>Show Time:</strong> {{ selectedShow.time }}</p>
-    <p><strong>Seats:</strong> {{ selectedSeats }}</p>
-    <button class="btn btn-primary mt-3" (click)="confirmBooking()">Confirm Booking</button>
-  </div>
+  <p><strong>Movie:</strong> {{ movie.name }}</p>
+  <p><strong>City:</strong> {{ city }}</p>
+  <p><strong>Theatre:</strong> {{ theatre.name }}</p>
+  <p><strong>Show Time:</strong> {{ show.time }}</p>
+  <p><strong>Seats:</strong> {{ seats }}</p>
+  <p><strong>Total Price:</strong> ${{ totalPrice }}</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
 </div>
