@@ -1,3 +1,212 @@
+import { Component, Input } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { CityModalComponent } from '../city-modal/city-modal.component';
+
+@Component({
+  selector: 'app-movie-detail-modal',
+  templateUrl: './movie-detail-modal.component.html',
+  styleUrls: ['./movie-detail-modal.component.css']
+})
+export class MovieDetailModalComponent {
+  @Input() movie: any;
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private modalService: NgbModal,
+    private router: Router
+  ) {}
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
+  bookTickets(): void {
+    this.activeModal.close();
+    const modalRef = this.modalService.open(CityModalComponent);
+    modalRef.componentInstance.movie = this.movie;
+    modalRef.result.then((result: {city:string,show:any}) => {
+      console.log('selected city:',result.city);
+      console.log('selected show:',result.show);
+      this.activeModal.close();
+      this.router.navigate(['/',{movieId:this.movie.id,city: result.city,showId: result.show.id}]);
+    }, ()=>{
+
+    });
+  }
+}
+
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TheatreService } from '../../services/theatre.service';
+import { ShowService } from 'src/app/services/show.service';
+import { SeatsModalComponent } from '../seats-modal/seats-modal.component';
+import { BookingDetailsModalComponent } from '../booking-details-modal/booking-details-modal.component';
+
+@Component({
+  selector: 'app-city-modal',
+  templateUrl: './city-modal.component.html',
+  styleUrls: ['./city-modal.component.css']
+})
+export class CityModalComponent implements OnInit {
+  @Input() movie: any;
+  cities: string[] = [];
+  theatres: any[]=[];
+  selectedCity: string | null=null ;
+  selectedShow: any | null=null;
+  selectedSeats: number = 1;
+  showBookingDetails: boolean= false;
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private theatreService: TheatreService,
+    private modalService: NgbModal,
+    private showService: ShowService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCities();
+  }
+
+  loadCities(): void {
+    this.theatreService.getCities().subscribe((cities: string[]) => {
+      this.cities = cities;
+    });
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
+  selectCity(city: string): void {
+    this.selectedCity=city;   
+    // this.loadTheatres(city);
+    this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+      this.theatres =theatres;
+      this.theatres.forEach(theatre =>{
+        //this.loadShows(theatre);
+        console.log(theatre.id);
+        console.log(this.movie.id);
+        this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
+          console.log('shows for theatre ID: ${theatre.id}:',shows);
+          theatre.shows = shows;
+        });
+      });
+    });
+  }
+
+  // loadTheatres(city:string): void{
+  //   this.theatreService.getTheatresByCity(city).subscribe(theatres =>{
+  //     this.theatres =theatres;
+  //     this.theatres.forEach(theatre =>{
+  //       this.loadShows(theatre);
+  //     });
+  //   });
+  // }
+
+  // loadShows(theatre:any):void{
+  //   console.log('fetching shows for theatre ID: ${theatre.id} and movie ID: ${this.movie.id');
+  //   this.showService.getShowsbyMovieAndTheatre(this.movie.id,theatre.id).subscribe(shows=>{
+  //     console.log('shows for theatre ID: ${theatre.id}:',shows);
+  //     theatre.shows = shows;
+  //   });
+  // }
+
+  selectShow(show: any):void{
+    const modalRef = this.modalService.open(SeatsModalComponent);
+    modalRef.componentInstance.show=show;
+
+    modalRef.result.then((result)=>{
+      if(result){
+        this.openBookingDetailsModal(result);
+      }
+    }, (reason)=>{
+
+    });
+    // this.selectShow=show;
+    // console.log(this.selectShow);
+    // this.showSeatSelection();
+    // this.showBookingDetails= false;
+    // this.activeModal.close({city: this.selectCity, show});
+  }
+
+openBookingDetailsModal(result:any): void{
+  const modalRef=this.modalService.open(BookingDetailsModalComponent);
+  modalRef.componentInstance.movie=this.movie;
+  modalRef.componentInstance.city=this.selectedCity;
+  modalRef.componentInstance.theatre=result.show.theatre;
+  modalRef.componentInstance.show=result.show;
+  modalRef.componentInstance.seats=result.seats;
+
+  modalRef.result.then((finalResult)=>{
+    if(finalResult && finalResult.confirmed) {
+      this.confirmBooking(result);
+    }
+  }, (reason)=>{
+
+  });
+}
+
+  showSeatSelection(): void{
+    this.showBookingDetails=false;
+  }
+
+  increaseSeats(): void{
+    if(this.selectedSeats<10){
+      this.selectedSeats++;
+    }
+  }
+
+  decreaseSeats():void{
+    if(this.selectedSeats>1){
+      this.selectedSeats--;
+    }
+  }
+
+  proceedToBookingDetails(): void{
+    this.showBookingDetails=true;
+  }
+
+  confirmBooking(result: any): void{
+    this.activeModal.close({city: this.selectedCity, show: this.selectedShow,seats: this.selectedSeats});
+  }
+}
+
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
+@Component({
+  selector: 'app-seats-modal',
+  templateUrl: './seats-modal.component.html',
+  styleUrls: ['./seats-modal.component.css']
+})
+export class SeatsModalComponent implements OnInit {
+  @Input() show: any;
+  availableSeats = Array(20).fill(0).map((x, i) => i + 1);
+  selectedSeats: number[] = [];
+
+  constructor(public activeModal: NgbActiveModal) {}
+
+  ngOnInit(): void {}
+
+  toggleSeat(seat: number): void {
+    const index = this.selectedSeats.indexOf(seat);
+    if (index > -1) {
+      this.selectedSeats.splice(index, 1);
+    } else {
+      this.selectedSeats.push(seat);
+    }
+  }
+
+  confirm(): void {
+    this.activeModal.close(this.selectedSeats);
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+}
+
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -30,20 +239,3 @@ export class BookingDetailsModalComponent implements OnInit {
     this.activeModal.close({ confirmed: true });
   }
 }
-
-<div class="modal-header">
-  <h5 class="modal-title">Booking Details</h5>
-  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
-</div>
-<div class="modal-body">
-  <p><strong>Movie:</strong> {{ movie.name }}</p>
-  <p><strong>City:</strong> {{ city }}</p>
-  <p><strong>Theatre:</strong> {{ theatre.name }}</p>
-  <p><strong>Show Time:</strong> {{ show.time }}</p>
-  <p><strong>Seats:</strong> {{ seats }}</p>
-  <p><strong>Total Price:</strong> ${{ totalPrice }}</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
-</div>
