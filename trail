@@ -53,3 +53,18 @@ SELECT TOP (1000) [id]
       ,[row]
       ,[number]
   FROM [BookMyShowDB].[dbo].[SeatTable]
+
+SELECT 
+    st.row,
+    st.number,
+    s.availability
+FROM 
+    [BookMyShowDB].[dbo].[Seat] s
+JOIN 
+    [BookMyShowDB].[dbo].[SeatTable] st
+ON 
+    s.[Row] = st.[row] AND s.[Number] = st.[number]
+WHERE 
+    s.[MovieId] = @movieId AND 
+    s.[TheatreId] = @theatreId AND 
+    s.[ShowTime] = @showTime
