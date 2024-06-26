@@ -90,3 +90,48 @@ BEGIN
         s.[TheatreId] = @theatreId AND 
         s.[ShowTime] = @showTime
 END
+
+public Task<List<BookSeat>> GetBookedSeats(string ShowTime, int theatreId, int MovieId)
+{
+    using (var connection = _dapperContext.CreateConnection())
+    {
+        var sqlQuery = "spc_getSeatAvailability";
+
+        var parameters = new DynamicParameters();
+        parameters.Add("movieId",MovieId, DbType.Int32);
+        parameters.Add("theatreId", theatreId, DbType.Int32);
+        parameters.Add("showTime", ShowTime, DbType.String);
+
+        // Define the output parameter
+        //parameters.Add("Result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        connection.Execute(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
+
+        // Retrieve the output value
+        //int result = parameters.Get<int>("Result");
+
+        return result;
+    }
+}
+
+ ALTER PROCEDURE [dbo].[spc_getSeatAvailability]
+    @movieId INT,
+    @theatreId INT,
+    @showTime DATETIME
+AS
+BEGIN
+    SELECT Distinct
+        st.row,
+        st.number,
+        s.availability
+    FROM 
+        [BookMyShowDB].[dbo].[Seat] s
+    JOIN 
+        [BookMyShowDB].[dbo].[SeatTable] st
+    ON 
+        s.[Row] = st.[row] AND s.[Number] = st.[number]
+    WHERE 
+        s.[MovieId] = @movieId AND 
+        s.[TheatreId] = @theatreId AND 
+        s.[ShowTime] = @showTime
+END
