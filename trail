@@ -13,12 +13,15 @@ VALUES
 (11, 1, 'C', 3),
 (12, 1, 'C', 4);
 
-CREATE TABLE Seats (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  theatre_id INT,
-  row VARCHAR(5),
-  number INT,
-  FOREIGN KEY (theatre_id) REFERENCES Theatres(id)
+CREATE TABLE Bookings (
+  id INT Identity(1,1) PRIMARY KEY,
+  show_id INT,
+  seat_id INT,
+  user_id INT,
+  status VARCHAR(50),
+  FOREIGN KEY (user_id) REFERENCES Users(UserId),  
+  FOREIGN KEY (show_id) REFERENCES Show(Time,TheatreId,MovieId),
+  FOREIGN KEY (seat_id) REFERENCES SeatTable(id)
 );
 
 INSERT INTO Bookings (id, show_id, seat_id, user_id, status)
