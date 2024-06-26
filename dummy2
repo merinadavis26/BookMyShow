@@ -1,46 +1,31 @@
-seat.service.ts
-  import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+<div class="modal-header">
+  <h4 class="modal-title">Select Seats</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="d-flex flex-wrap">
+    <div *ngFor="let row of ['A', 'B', 'C', 'D']" class="seat-row">
+      <span class="row-label">{{ row }}</span>
+      <div *ngFor="let seat of availableSeats | filterByRow:row" class="seat-container">
+        <button 
+          class="seat-button" 
+          [ngClass]="{ 'booked': seat.availability === 'Booked', 'available': seat.availability === 'Available' }"
+          (click)="toggleSeat(seat.number)"
+          [disabled]="seat.availability === 'Booked'">
+          {{ seat.number }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
+</div>
 
-export interface BookSeat {
-  row: string;
-  number: number;
-  availability: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class SeatService {
-  apiUrl="https://localhost:44353/api/Seat"
-
-  constructor(private http: HttpClient) { }
-
-  getBookedSeats(showTime: string, theatreId: number, movieId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/showTime/${showTime}/movie/${movieId}/theatre/${theatreId}`);
-    // https://localhost:44353/api/Seat/showTime/18%3A00/movie/1/theatre/1
-  }}
-
-
-FilterByRowPipe.ts
-import { Pipe, PipeTransform } from '@angular/core';
-import { BookSeat } from './services/seat.service';
-
-@Pipe({
-  name: 'filterByRow'
-})
-export class FilterByRowPipe implements PipeTransform {
-  
-
-  transform(seats: BookSeat[],row:string): BookSeat[] {
-    return seats.filter(seat => seat.row=== row);
-  }
-
-}
-
-seat-modal.component.ts
-  import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SeatService, BookSeat } from 'src/app/services/seat.service';
 import { FilterByRowPipe } from 'src/app/filter-by-row.pipe';
@@ -52,7 +37,7 @@ import { FilterByRowPipe } from 'src/app/filter-by-row.pipe';
 })
 export class SeatsModalComponent implements OnInit {
   @Input() show: any;
-  availableSeats = BookSeat[]=[];
+  availableSeats: BookSeat[]= [];
   selectedSeats: number[] = [];
 
   constructor(
@@ -65,7 +50,7 @@ export class SeatsModalComponent implements OnInit {
   }
 
   loadSeats(): void{
-    const showTime=this.show.showTime;
+    const showTime=this.show.time;
     const theatreId=this.show.theatreId;
     const movieId=this.show.movieId;
 
@@ -96,80 +81,54 @@ export class SeatsModalComponent implements OnInit {
   }
 }
 
-seat-modal.component.html
-  <div *ngFor="let row of ['A', 'B', 'C', 'D']" class="seat-row">
-  <span class="row-label">{{ row }}</span>
-  <div *ngFor="let seat of availableSeats | filterByRow:row" class="seat-container">
-    <button 
-      class="seat-button" 
-      [ngClass]="{ 'booked': seat.availability === 'Booked', 'available': seat.availability === 'Available' }"
-      (click)="toggleSeat(seat.number)"
-      [disabled]="seat.availability === 'Booked'">
-      {{ seat.number }}
-    </button>
-  </div>
-</div>
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
-</div>
-
-      X [ERROR] TS2693: 'BookSeat' only refers to a type, but is being used as a value here. [plugin angular-compiler]
-
-    src/app/user/seats-modal/seats-modal.component.ts:13:19:
-      13 │   availableSeats = BookSeat[]=[];
-         ╵                    ~~~~~~~~
-
-
-X [ERROR] TS1011: An element access expression should take an argument. [plugin angular-compiler]
-
-    src/app/user/seats-modal/seats-modal.component.ts:13:28:
-      13 │   availableSeats = BookSeat[]=[];
-         ╵                             ^
-
-
-X [ERROR] TS2322: Type 'any[]' is not assignable to type 'never[]'.
-  Type 'any' is not assignable to type 'never'. [plugin angular-compiler]
-
-    src/app/user/seats-modal/seats-modal.component.ts:31:6:
-      31 │       this.availableSeats=seats;
-         ╵       ~~~~~~~~~~~~~~~~~~~
-
-
-X [ERROR] Unexpected "]"
-
-    src/app/user/seats-modal/seats-modal.component.ts:41:39:
-      41 │         this.availableSeats = BookSeat[] = [];
-         ╵                                        ^
-
-.seat-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+export interface BookSeat {
+  row: string;
+  number: number;
+  availability: string;
 }
 
-.row-label {
-  width: 20px;
-  font-weight: bold;
-  margin-right: 10px;
-}
+@Injectable({
+  providedIn: 'root'
+})
+export class SeatService {
+  apiUrl="https://localhost:44353/api/Seat"
 
-.seat-container {
-  margin-right: 5px;
-}
+  constructor(private http: HttpClient) { }
 
-.seat-button {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-}
+  getBookedSeats(showTime: string, theatreId: number, movieId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/showTime/${showTime}/movie/${movieId}/theatre/${theatreId}`);
+    // https://localhost:44353/api/Seat/showTime/18%3A00/movie/1/theatre/1
+  }}
 
-.seat-button.booked {
-  background-color: red;
-  cursor: not-allowed;
-}
+        [HttpGet("showTime/{showTime}/movie/{MovieId}/theatre/{TheatreId}")]
+        public async Task<JsonResult> GetBookedSeats(string showTime, int MovieId, int TheatreId)
+        {
+            var movie = await _seatServices.GetBookedSeats(showTime, TheatreId, MovieId);
+            return new JsonResult(movie);
 
-.seat-button.available {
-  background-color: green;
-}
+        public async Task<List<BookSeat>> GetBookedSeats(string ShowTime, int theatreId, int MovieId)
+        {
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                var sqlQuery = "spc_getSeatAvailability";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("movieId",MovieId, DbType.Int32);
+                parameters.Add("theatreId", theatreId, DbType.Int32);
+                parameters.Add("showTime", ShowTime, DbType.String);
+
+                // Define the output parameter
+                //parameters.Add("Result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                var result = await connection.QueryAsync<BookSeat>(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
+
+                // Retrieve the output value
+                //int result = parameters.Get<int>("Result");
+
+                return result.ToList();
+            }
+        }
