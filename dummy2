@@ -8,15 +8,18 @@
   <div class="d-flex flex-wrap">
     <div *ngFor="let row of ['A', 'B', 'C', 'D']" class="seat-row">
       <span class="row-label">{{ row }}</span>
-      <div *ngFor="let seat of availableSeats | filterByRow:row" class="seat-container">
-        <button 
-          class="seat-button" 
-          [ngClass]="{ 'booked': seat.availability === 'Booked', 'available': seat.availability === 'Available' }"
-          (click)="toggleSeat(seat.number)"
-          [disabled]="seat.availability === 'Booked'">
-          {{ seat.number }}
-        </button>
-      </div>
+      <ng-container *ngFor="let seat of availableSeats" >
+        <div class="seat-container" *ngIf="seat.row===row">
+          <button 
+            class="seat-button" [class.bg-success]="selectedSeats.includes(seat.number)"
+            [ngClass]="getSeatClass(row,seat.number)"
+            (click)="toggleSeat(seat.number)"
+            style="cursor: pointer;"
+            [disabled]="isSeatBooked(row,seat.number)">
+            {{ seat.number }}
+          </button>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
@@ -24,111 +27,3 @@
   <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
   <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
 </div>
-
-import { Component, Input, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { SeatService, BookSeat } from 'src/app/services/seat.service';
-import { FilterByRowPipe } from 'src/app/filter-by-row.pipe';
-
-@Component({
-  selector: 'app-seats-modal',
-  templateUrl: './seats-modal.component.html',
-  styleUrls: ['./seats-modal.component.css']
-})
-export class SeatsModalComponent implements OnInit {
-  @Input() show: any;
-  availableSeats: BookSeat[]= [];
-  selectedSeats: number[] = [];
-
-  constructor(
-    public activeModal: NgbActiveModal,
-    private seatService: SeatService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadSeats();
-  }
-
-  loadSeats(): void{
-    const showTime=this.show.time;
-    const theatreId=this.show.theatreId;
-    const movieId=this.show.movieId;
-
-    this.seatService.getBookedSeats(showTime,theatreId,movieId).subscribe(seats=>{
-      this.availableSeats=seats;
-    },
-    error=>{
-      console.error('Error loading seats: ', error);
-    }
-  );
-  }
-
-  toggleSeat(seatNumber: number): void {
-    const index = this.selectedSeats.indexOf(seatNumber);
-    if (index > -1) {
-      this.selectedSeats.splice(index, 1);
-    } else {
-      this.selectedSeats.push(seatNumber);
-    }
-  }
-
-  confirm(): void {
-    this.activeModal.close(this.selectedSeats);
-  }
-
-  dismiss(): void {
-    this.activeModal.dismiss();
-  }
-}
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-export interface BookSeat {
-  row: string;
-  number: number;
-  availability: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class SeatService {
-  apiUrl="https://localhost:44353/api/Seat"
-
-  constructor(private http: HttpClient) { }
-
-  getBookedSeats(showTime: string, theatreId: number, movieId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/showTime/${showTime}/movie/${movieId}/theatre/${theatreId}`);
-    // https://localhost:44353/api/Seat/showTime/18%3A00/movie/1/theatre/1
-  }}
-
-        [HttpGet("showTime/{showTime}/movie/{MovieId}/theatre/{TheatreId}")]
-        public async Task<JsonResult> GetBookedSeats(string showTime, int MovieId, int TheatreId)
-        {
-            var movie = await _seatServices.GetBookedSeats(showTime, TheatreId, MovieId);
-            return new JsonResult(movie);
-
-        public async Task<List<BookSeat>> GetBookedSeats(string ShowTime, int theatreId, int MovieId)
-        {
-            using (var connection = _dapperContext.CreateConnection())
-            {
-                var sqlQuery = "spc_getSeatAvailability";
-
-                var parameters = new DynamicParameters();
-                parameters.Add("movieId",MovieId, DbType.Int32);
-                parameters.Add("theatreId", theatreId, DbType.Int32);
-                parameters.Add("showTime", ShowTime, DbType.String);
-
-                // Define the output parameter
-                //parameters.Add("Result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-                var result = await connection.QueryAsync<BookSeat>(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
-
-                // Retrieve the output value
-                //int result = parameters.Get<int>("Result");
-
-                return result.ToList();
-            }
-        }
