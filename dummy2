@@ -24,3 +24,34 @@ public async Task<IActionResult> BookSeats([FromBody] List<SeatBooking> seatBook
     }
     return Ok();
 }
+
+CREATE PROCEDURE spc_bookSeats
+    @movieId INT,
+    @theatreId INT,
+    @showTime VARCHAR(50),
+    @seats NVARCHAR(MAX)
+AS
+BEGIN
+    -- Parse the JSON array into a table variable
+    DECLARE @SeatsTable TABLE (
+        [row] VARCHAR(5),
+        [number] INT
+    )
+
+    INSERT INTO @SeatsTable ([row], [number])
+    SELECT 
+        JSON_VALUE(seat.value, '$.row') AS [row],
+        JSON_VALUE(seat.value, '$.number') AS [number]
+    FROM OPENJSON(@seats) AS seat
+
+    -- Update each seat's availability to 'Booked'
+    UPDATE s
+    SET s.availability = 'Booked'
+    FROM Seats s
+    INNER JOIN @SeatsTable st
+        ON s.row = st.[row]
+        AND s.number = st.[number]
+    WHERE s.movieId = @movieId
+      AND s.theatreId = @theatreId
+      AND s.showTime = @showTime
+END
