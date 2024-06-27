@@ -104,3 +104,47 @@ public async Task<IActionResult> BookSeats(
     }
     return Ok();
 }
+
+public class SeatServices
+{
+    private readonly IDapperContext _dapperContext;
+
+    public SeatServices(IDapperContext dapperContext)
+    {
+        _dapperContext = dapperContext;
+    }
+
+    public async Task BookSeat(int movieId, int theatreId, string showTime, string row, int number)
+    {
+        using (var connection = _dapperContext.CreateConnection())
+        {
+            var sqlQuery = "spc_bookSeat";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("movieId", movieId, DbType.Int32);
+            parameters.Add("theatreId", theatreId, DbType.Int32);
+            parameters.Add("showTime", showTime, DbType.String);
+            parameters.Add("row", row, DbType.String);
+            parameters.Add("number", number, DbType.Int32);
+
+            await connection.ExecuteAsync(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
+        }
+    }
+}
+
+CREATE PROCEDURE spc_bookSeat
+    @movieId INT,
+    @theatreId INT,
+    @showTime VARCHAR(50),
+    @row VARCHAR(5),
+    @number INT
+AS
+BEGIN
+    UPDATE Seats
+    SET availability = 'Booked'
+    WHERE movieId = @movieId
+      AND theatreId = @theatreId
+      AND showTime = @showTime
+      AND row = @row
+      AND number = @number;
+END
