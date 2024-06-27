@@ -89,3 +89,18 @@ public async Task BookSeat(int movieId, int theatreId, string showTime, string r
         await connection.ExecuteAsync(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
     }
 }
+
+[HttpPost("bookSeats")]
+public async Task<IActionResult> BookSeats(
+    [FromQuery] string showTime,
+    [FromQuery] int theatreId,
+    [FromQuery] int movieId,
+    [FromBody] List<BookSeat> seats)
+{
+    foreach (var seat in seats)
+    {
+        // Call your stored procedure to update each seat's availability to 'Booked'
+        await _seatServices.BookSeat(movieId, theatreId, showTime, seat.Row, seat.Number);
+    }
+    return Ok();
+}
