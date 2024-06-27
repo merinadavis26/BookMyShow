@@ -1,3 +1,92 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { SeatService, BookSeat } from 'src/app/services/seat.service';
+import { FilterByRowPipe } from 'src/app/filter-by-row.pipe';
+import { NumberValueAccessor } from '@angular/forms';
+
+@Component({
+  selector: 'app-seats-modal',
+  templateUrl: './seats-modal.component.html',
+  styleUrls: ['./seats-modal.component.css']
+})
+export class SeatsModalComponent implements OnInit {
+  @Input() show: any;
+  availableSeats: BookSeat[]= [];
+  selectedSeats: number[] = [];
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private seatService: SeatService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadSeats();
+  }
+
+  loadSeats(): void{
+    const showTime=this.show.time;
+    const theatreId=this.show.theatreId;
+    const movieId=this.show.movieId;
+
+    this.seatService.getAllSeats(theatreId).subscribe(seats=>{
+      this.availableSeats =seats;
+
+      this.loadBookedSeats(showTime,theatreId,movieId);
+    },
+  error =>{
+    console.error('error loading seats: ', error);
+  });
+  }
+
+  loadBookedSeats(showTime:string,theatreId:number,movieId: number): void{
+    this.seatService.getBookedSeats(showTime,theatreId,movieId).subscribe(bookedSeats=>{
+      this.availableSeats.forEach(seat=>{
+        const bookedSeat =bookedSeats.find(bs=>bs.row===seat.row && bs.number===seat.number);
+        if(bookedSeat){
+          seat.availability=bookedSeat.availability;
+        }
+      });
+    },
+  error=>{
+    console.log('error loading booked seats: ',error);
+  });
+  }
+
+  toggleSeat(seatNumber: number): void {
+    const index = this.selectedSeats.indexOf(seatNumber);
+    if (index > -1) {
+      this.selectedSeats.splice(index, 1);
+    } else {
+      this.selectedSeats.push(seatNumber);
+    }
+  }
+
+  isSeatBooked(row: string, seatNumber:number): boolean{
+    const seat=this.availableSeats.find(s=> s.row===row && s.number===seatNumber);
+    return !!seat && seat.availability=== 'Booked';
+  }
+
+  getSeatNumber(row:string,seatNumber: number): number{
+    return seatNumber;
+  }
+
+  getSeatClass(row: string, seatNumber: number): string{
+    const seat= this.availableSeats.find(s=> s.row===row && s.number===seatNumber);
+    if(seat){
+      return seat.availability==='Booked'?'booked':'available';
+    }
+    return '';
+  }
+
+  confirm(): void {
+    this.activeModal.close(this.selectedSeats);
+  }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+}
+
 <div class="modal-header">
   <h4 class="modal-title">Select Seats</h4>
   <button type="button" class="close" aria-label="Close" (click)="dismiss()">
@@ -11,10 +100,9 @@
       <ng-container *ngFor="let seat of availableSeats" >
         <div class="seat-container" *ngIf="seat.row===row">
           <button 
-            class="seat-button" [class.bg-success]="selectedSeats.includes(seat.number)"
+            class="seat-button" 
             [ngClass]="getSeatClass(row,seat.number)"
             (click)="toggleSeat(seat.number)"
-            style="cursor: pointer;"
             [disabled]="isSeatBooked(row,seat.number)">
             {{ seat.number }}
           </button>
