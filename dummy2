@@ -60,3 +60,32 @@ Argument of type '{ row: string; number: number; }' is not assignable to paramet
 Property 'row' does not exist on type 'number'
 Property 'number' does not exist on type 'number'.ts(2339)
 any
+
+
+[HttpPost("bookSeats")]
+public async Task<IActionResult> BookSeats([FromBody] List<BookSeat> seats)
+{
+    foreach (var seat in seats)
+    {
+        // Call your stored procedure to update each seat's availability to 'Booked'
+        await _seatServices.BookSeat(seat.MovieId, seat.TheatreId, seat.ShowTime, seat.Row, seat.Number);
+    }
+    return Ok();
+}
+
+public async Task BookSeat(int movieId, int theatreId, string showTime, string row, int number)
+{
+    using (var connection = _dapperContext.CreateConnection())
+    {
+        var sqlQuery = "spc_bookSeat";
+
+        var parameters = new DynamicParameters();
+        parameters.Add("movieId", movieId, DbType.Int32);
+        parameters.Add("theatreId", theatreId, DbType.Int32);
+        parameters.Add("showTime", showTime, DbType.String);
+        parameters.Add("row", row, DbType.String);
+        parameters.Add("number", number, DbType.Int32);
+
+        await connection.ExecuteAsync(sqlQuery, parameters, commandType: CommandType.StoredProcedure);
+    }
+}
