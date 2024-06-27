@@ -148,3 +148,16 @@ BEGIN
       AND row = @row
       AND number = @number;
 END
+
+
+CREATE PROCEDURE spc_bookSeat
+    @movieId INT,
+    @theatreId INT,
+    @showTime VARCHAR(50),
+    @row VARCHAR(5),
+    @number INT
+AS
+BEGIN
+    INSERT INTO Seats (movieId, theatreId, showTime, row, number, availability)
+    VALUES (@movieId, @theatreId, @showTime, @row, @number, 'Booked');
+END
