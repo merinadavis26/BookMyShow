@@ -1,111 +1,76 @@
-AGILE
+### Agile Methodology
 
-Agile Methodology
+Agile methodology is a flexible way to manage projects and develop software. It focuses on delivering small parts of the project frequently, allowing teams to quickly adapt to changes and feedback from customers. This approach helps ensure that the final product meets the customer’s needs.
 
-o A project management and Software development approach.
+### Agile Principles
 
-o It provides flexibility.
+1. **Early Delivery of the Product**: Get a basic version of the product to customers quickly for early feedback.
+2. **Adapt to Change**: Be open to making changes, even late in the process, to meet customer needs.
+3. **Frequent Delivery**: Regularly deliver small updates or pieces of the project.
+4. **Business and Developers Collaboration**: Work closely with business stakeholders to align the project with business goals.
+5. **Motivated Individuals**: Ensure team members are motivated and supported.
+6. **Face-to-Face Communication**: Promote direct communication to avoid misunderstandings.
+7. **Working Software**: Prioritize creating software that works, as this is the main measure of progress.
+8. **Maintain Constant Pace**: Work at a steady, sustainable pace.
+9. **Technical Excellence**: Aim for high-quality technical work to improve agility.
+10. **Simplicity**: Keep things simple to focus on essential work.
+11. **Self-Organizing Teams**: Allow teams to organize their work and make decisions independently.
+12. **Regular Reflection and Adjustment**: Frequently review and improve how the team works.
 
-o Focuses on delivering small pieces of code frequently.
+### Agile Manifesto
 
-o Gives importance to customer-developer interaction.
+The Agile Manifesto is a set of guiding principles for flexible, customer-focused software development:
 
-Agile Principles
+1. **Individuals and Interactions over Processes and Tools**: Value people and their interactions more than strict processes and tools.
+2. **Working Software over Comprehensive Documentation**: Focus on creating software that works rather than spending too much time on paperwork.
+3. **Customer Collaboration over Contract Negotiation**: Work closely with customers rather than strictly following contract terms.
+4. **Responding to Change over Following a Plan**: Be ready to change plans as needed rather than sticking rigidly to them.
 
-1. Early delivery of the product.
+### Pillars of Scrum
 
-2. Adapt to change.
+Scrum, a popular Agile framework, is based on three key principles:
 
-3. Frequent delivery.
+1. **Transparency**: Make sure everyone involved can see what’s happening in the project.
+2. **Inspection**: Regularly check progress and project artifacts to identify issues.
+3. **Adaptation**: Adjust processes based on what is learned during inspections to improve efficiency.
 
-4. Business and developers collaboration
+### Scrum Values
 
-5. Motivated individuals.
+1. **Focus**: Stay concentrated on the goals of the sprint and work towards delivering value efficiently.
+2. **Respect**: Recognize and value each team member’s contributions.
+3. **Courage**: Take on challenging tasks and make tough decisions when necessary.
+4. **Commitment**: Be dedicated to the team’s goals and do what’s necessary to achieve them.
+5. **Openness**: Be transparent about work progress, feedback, and challenges.
 
-6. Face-to-face communication.
+### Roles in Scrum
 
-7. Working software
+1. **Scrum Master**: Helps the team follow Scrum practices, removes obstacles, and ensures adherence to Agile principles.
+2. **Product Owner**: Manages the list of work to be done (product backlog), sets priorities, and represents the customer’s interests.
+3. **Development Team**: A group of professionals who work together to deliver parts of the product during each sprint.
 
-8. Maintain constant pace
+### Scrum Process
 
-9. Technical brilliance
+1. **Sprint**: A fixed period (usually 2-4 weeks) where the team works to deliver a part of the product.
+2. **Sprint Planning**: A meeting at the start of the sprint to set goals and decide which tasks to complete.
+3. **Daily Scrum**: A short, daily meeting where the team discusses progress and plans for the next day.
+4. **Sprint Review**: A meeting at the end of the sprint where the team shows completed work to the Product Owner and updates the product backlog.
+5. **Sprint Retrospective**: A session for the team to reflect on the sprint, discuss what went well, and identify areas for improvement.
 
-10. Simplicity
+### User Stories
 
-11. Self-organizing teams
+User stories are short descriptions of a feature or functionality from the user’s perspective. They help capture requirements in an Agile framework and typically follow the format: "As a [user], I want [goal] so that [reason]."
 
-12. Regular reflection and adjustment within the team
+### INVEST Model in Agile
 
-Agile Manifesto
+1. **Independent**: Ensure user stories can be developed and delivered separately.
+2. **Negotiable**: Allow stories to be flexible and open to changes.
+3. **Valuable**: Ensure each user story adds value to the customer.
+4. **Estimable**: Make stories clear enough to estimate the effort required.
+5. **Small**: Break down stories into manageable sizes that can be completed within a sprint.
+6. **Testable**: Write stories in a way that allows for objective testing to confirm they are done.
 
-1. Agile Manifesto is a set of guiding principles for a flexible and customer centric software development.
+### Velocity in User Stories
 
-2. Individuals and Interactions over Processes and Tools
+Velocity measures how much work a Scrum team can complete in a sprint. It’s calculated by adding up the points of all completed user stories. This helps teams estimate how much work they can handle in future sprints and plan their workload accordingly.
 
-3. Working Software over Comprehensive Documentation
-
-4. Customer Collaboration over Contract Negotiation
-
-5. Responding to Change over Following a Plan
-
-Pillars of scrum
-
-1. Transparency : Ensuring all aspects of the process are visible to those responsible for the outcome.
-
-2. Inspect : Regularly examining scrum artifacts and progress towards a sprint goal to detect any changes.
-
-3. Adapt : Adjusting processes to improve efficiency based on inspected outcomes.
-
-Scrum Values
-
-1. Focus : Concentrating on the sprint goals and delivering value efficiently.
-
-2. Respect : Recognizing contributions of all team members and respecting each other to foster a collaborative environment.
-
-3. Courage : Having the bravery to take on challenging tasks make difficult decisions.
-
-4. Commitment : Dedication towards team's goals and doing what is necessary to achieve them.
-
-5. Openness : Being transparent about work progress, feedback and various challenges faced.
-
-Different roles in Scrum
-
-1. Scrum Master : Facilitates scrum processes, removes impediments and ensures the team follow agile principles.
-
-2. Product Owner : Manages the product backlog, defines priorities, and represents the customer's interests.
-
-3. Development Team : A cross-functional group responsible for delivering potentially shippable product increments during each sprint.
-
-Scrum Process
-
-1. Sprint : A fixed duration period(2-4 weeks) where the team works to deliver a product increment.
-
-2. Sprint Planning : A meeting involving scrum master, development team and product owner at the start of the sprint to set the sprint goal and select backlog items for completion.
-
-3. Daily Scrum : A brief, daily meeting(15 mins) where the development team discusses progress and plans the next 24 hours , facilitated by the scrum master.
-
-4. Sprint Review : A meeting at the end of the sprint where the development team presents completed work to the product owner and discusses the updates to the product backlog.
-
-5. Sprint Retrospective : A session for the scrum master, product owner and development team to reflect on the sprint, identify what went well, challenged faced and plan improvements for the next sprint.
-
-User Stories
-
-User stories are short, simple descriptions of a feature or functionality told from the perspective of the user or customer. They are used to capture requirements in an Agile framework. Typically, they follow the format: "As a…(user), I want… (goal) so that …(reason)".
-
-Invest Model In Agile
-
-1. Independent : Ensuring user stories can be developed and delivered independently.
-
-2. Negotiable : Allowing stories to be flexible and open to discussion and modification.
-
-3. Valuable : Delivering user stories that add value to the customer .
-
-4. Estimable : Making stories clear enough to estimate the effort required for completion.
-
-5. Small : Breaking down stories into small sizes that can be completed within a sprint.
-
-6. Testable : Writing stories in a way that allows for objective testing to confirm completion.
-
-Velocity in User Stories
-
-Velocity is a measure of the amount of a work a scrum team can complete during a single sprint. It is calculated by adding up the story points of all the user stories that were completed during the sprint. Velocity helps teams estimate how much work they can handle in future sprints and plan their workload accordingly.
+This simplified overview of Agile methodology, principles, manifesto, and Scrum framework highlights the importance of flexibility, collaboration, and continuous improvement in modern software development practices.
