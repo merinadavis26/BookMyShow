@@ -1,1 +1,111 @@
-7FQL.'2B#GSmk559fid@)ri3k#W42:Bi
+AGILE
+
+Agile Methodology
+
+o A project management and Software development approach.
+
+o It provides flexibility.
+
+o Focuses on delivering small pieces of code frequently.
+
+o Gives importance to customer-developer interaction.
+
+Agile Principles
+
+1. Early delivery of the product.
+
+2. Adapt to change.
+
+3. Frequent delivery.
+
+4. Business and developers collaboration
+
+5. Motivated individuals.
+
+6. Face-to-face communication.
+
+7. Working software
+
+8. Maintain constant pace
+
+9. Technical brilliance
+
+10. Simplicity
+
+11. Self-organizing teams
+
+12. Regular reflection and adjustment within the team
+
+Agile Manifesto
+
+1. Agile Manifesto is a set of guiding principles for a flexible and customer centric software development.
+
+2. Individuals and Interactions over Processes and Tools
+
+3. Working Software over Comprehensive Documentation
+
+4. Customer Collaboration over Contract Negotiation
+
+5. Responding to Change over Following a Plan
+
+Pillars of scrum
+
+1. Transparency : Ensuring all aspects of the process are visible to those responsible for the outcome.
+
+2. Inspect : Regularly examining scrum artifacts and progress towards a sprint goal to detect any changes.
+
+3. Adapt : Adjusting processes to improve efficiency based on inspected outcomes.
+
+Scrum Values
+
+1. Focus : Concentrating on the sprint goals and delivering value efficiently.
+
+2. Respect : Recognizing contributions of all team members and respecting each other to foster a collaborative environment.
+
+3. Courage : Having the bravery to take on challenging tasks make difficult decisions.
+
+4. Commitment : Dedication towards team's goals and doing what is necessary to achieve them.
+
+5. Openness : Being transparent about work progress, feedback and various challenges faced.
+
+Different roles in Scrum
+
+1. Scrum Master : Facilitates scrum processes, removes impediments and ensures the team follow agile principles.
+
+2. Product Owner : Manages the product backlog, defines priorities, and represents the customer's interests.
+
+3. Development Team : A cross-functional group responsible for delivering potentially shippable product increments during each sprint.
+
+Scrum Process
+
+1. Sprint : A fixed duration period(2-4 weeks) where the team works to deliver a product increment.
+
+2. Sprint Planning : A meeting involving scrum master, development team and product owner at the start of the sprint to set the sprint goal and select backlog items for completion.
+
+3. Daily Scrum : A brief, daily meeting(15 mins) where the development team discusses progress and plans the next 24 hours , facilitated by the scrum master.
+
+4. Sprint Review : A meeting at the end of the sprint where the development team presents completed work to the product owner and discusses the updates to the product backlog.
+
+5. Sprint Retrospective : A session for the scrum master, product owner and development team to reflect on the sprint, identify what went well, challenged faced and plan improvements for the next sprint.
+
+User Stories
+
+User stories are short, simple descriptions of a feature or functionality told from the perspective of the user or customer. They are used to capture requirements in an Agile framework. Typically, they follow the format: "As a…(user), I want… (goal) so that …(reason)".
+
+Invest Model In Agile
+
+1. Independent : Ensuring user stories can be developed and delivered independently.
+
+2. Negotiable : Allowing stories to be flexible and open to discussion and modification.
+
+3. Valuable : Delivering user stories that add value to the customer .
+
+4. Estimable : Making stories clear enough to estimate the effort required for completion.
+
+5. Small : Breaking down stories into small sizes that can be completed within a sprint.
+
+6. Testable : Writing stories in a way that allows for objective testing to confirm completion.
+
+Velocity in User Stories
+
+Velocity is a measure of the amount of a work a scrum team can complete during a single sprint. It is calculated by adding up the story points of all the user stories that were completed during the sprint. Velocity helps teams estimate how much work they can handle in future sprints and plan their workload accordingly.
